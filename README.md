@@ -57,31 +57,4 @@ Here's an overview of the sample applications you can explore:
 *   **Simulation Aspect:** As mentioned, these demos use an embedded, in-memory simulation of Tensorus's storage and data handling capabilities (via a Python class within each script). They are designed for conceptual illustration and do not require a separate, external Tensorus database installation. This makes them easy to download and run directly.
 *   **Data Ingestion:** Most demos will include a step (usually a button in the Streamlit UI) to "Load and Ingest Sample Data." This process involves generating tensor representations from raw sample data (like text or structured information) and populating the in-memory simulated TensorStorage. This step might take a few moments, especially on the first run, as NLP models might need to be downloaded and initialized.
 
-We encourage you to explore these demos to get a better understanding of how Tensorus can empower next-generation AI applications. Please refer to the specific README file within each demo's directory for detailed instructions.The main `README.md` file has been successfully updated and expanded.
-
-Here's a summary of the changes:
-
-1.  **New Title:** The main title was changed from `# samples` to `# Tensorus: Sample Applications & Concept Demos`.
-2.  **Introduction to Tensorus:**
-    *   Added a concise explanation of Tensorus as an agentic tensor database designed for advanced AI by managing multi-dimensional tensor data.
-    *   Mentioned its goal of enabling AI agents to perform complex analyses and gain deeper insights by treating data as interconnected tensors.
-3.  **Purpose of This Repository:**
-    *   Clarified that the repository hosts sample applications to demonstrate Tensorus's capabilities and concepts.
-    *   Added an "Important Note on Simulation" stating that these demos use an in-memory simulation (`EmbeddedTensorStorage`) for ease of use and conceptual illustration, requiring no external Tensorus installation.
-4.  **Overview of Demo Applications:**
-    *   Created an "Available Demos" section.
-    *   For each demo (`financial_news_impact_demo.py` and `story_analyzer_demo.py`):
-        *   **Title:** Added clear titles (e.g., "Financial News Impact Demo," "Smart Story Analyzer Demo").
-        *   **Description:** Provided brief explanations of what each demo showcases and its key idea (financial news impact prediction context vs. literary character analysis).
-        *   **Key Tensorus Concepts Demonstrated:** Listed relevant bullet points for each, such as storing multi-modal data, RAG with rich tensor context, analyzing temporal evolution, and representing textual nuances as structured tensors.
-        *   **How to Run:** Added links to their specific README files (e.g., `README_financial_news_impact_demo.md` and `README_story_analyzer_demo.md`) for detailed instructions.
-5.  **General Notes on Running Demos:**
-    *   Mentioned that each demo is a self-contained Streamlit application.
-    *   Stated common prerequisites (Python 3.8+, pip) before directing users to individual demo READMEs for specifics.
-    *   Reiterated the simulation aspect, emphasizing that the demos use an embedded, in-memory simulation of Tensorus.
-    *   Briefly explained the "Data Ingestion" step common in the demos.
-6.  **Structure and Formatting:**
-    *   Used Markdown for clear headings, bullet points, and links, creating a well-structured and readable document.
-    *   The README is now more welcoming and provides a clear roadmap for users.
-
-The updated `README.md` effectively introduces Tensorus, explains the repository's purpose, details the available demos with links to their specific instructions, and provides general guidance, all while consistently highlighting the simulated nature of the Tensorus functionalities presented.
+We encourage you to explore these demos to get a better understanding of how Tensorus can empower next-generation AI applications. Please refer to the specific README file within each demo's directory for detailed instructions.

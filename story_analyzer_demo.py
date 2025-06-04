@@ -178,7 +178,7 @@ try:
     import nltk
     
     # Download all required NLTK data
-    required_nltk_data = ['punkt', 'punkt_tab', 'stopwords']
+    required_nltk_data = ['punkt', 'stopwords']
     
     for data in required_nltk_data:
         try:
@@ -195,7 +195,6 @@ try:
     
     # Verify all required data is available
     nltk.data.find('tokenizers/punkt')
-    nltk.data.find('tokenizers/punkt_tab')
         
 except ImportError as e:
     st.error(f"Required packages not found. Please install them with: pip install transformers torch nltk")

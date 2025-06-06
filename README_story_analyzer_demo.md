@@ -1,130 +1,78 @@
-# (Simulated) Tensorus Demo: The Smart Story Analyzer 📚✨
+# Story Analyzer Demo with Simulated TensorStorage
 
-Welcome to the "Smart Story Analyzer" demo! This interactive application showcases conceptual capabilities of **Tensorus**, an agentic tensor database, by analyzing character relationships and sentiment evolution in classic literature using a *simulated* backend.
+This demo application, "Smart Story Analyzer," showcases how a simulated Tensor Database (using `EmbeddedTensorStorage`) can be used to analyze character relationships and sentiment evolution in literary texts. It leverages NLP techniques to process text and store derived tensor representations.
 
-It's designed to show how Tensorus could go beyond simple data storage and similarity search (common in vector databases) to enable deeper, more nuanced understanding of complex data like text.
+**Note:** This demo uses an *in-memory simulation* (`EmbeddedTensorStorage`) for illustrative purposes and does not connect to a full, external Tensor Database instance.
 
-## Important Note on Simulation
+## Purpose
 
-**This demo uses an *in-memory simulation* of Tensorus's core concepts, primarily through the `EmbeddedTensorStorage` class within the `story_analyzer_demo.py` script. It does not connect to a full, external Tensorus database instance.** The purpose is to clearly illustrate the *type* and *structure* of data Tensorus would manage and how AI agents could interact with such data, without requiring a full Tensorus deployment. All "Tensorus" functionalities described are simulated within the script for conceptual clarity.
+The demo aims to illustrate:
+*   The generation and storage of diverse tensor types from text (sentence embeddings, character sentiment flows, interaction matrices).
+*   How these structured tensors can be queried and processed to derive insights about narrative elements, such as the evolution of character sentiment and relationships.
+*   The conceptual advantages of a Tensor Database approach for managing and analyzing complex, multi-faceted data from text.
 
-## What Does This Demo Do?
+## Key Features
 
-Imagine you're reading a long book and want to understand how the relationship between two characters changes, or how one character is portrayed in different situations. This demo simulates this:
+*   **Literary Text Analysis**: Uses snippets from "Alice's Adventures in Wonderland" as sample data.
+*   **Tensor Generation**:
+    *   Sentence Embeddings (2D Tensor): Captures semantic meaning of individual sentences.
+    *   Character Sentiment Flow (3D Tensor): Tracks sentiment (Negative, Neutral, Positive) for each character in each sentence.
+    *   Character Interaction Matrix (2D Tensor): Quantifies co-occurrence of characters within sentences for each text section.
+*   **Dynamic Analysis**:
+    *   Analyzes interaction strength between selected characters.
+    *   Tracks sentiment evolution for a target character, optionally in the context of interactions with another character.
+*   **NLP Integration**:
+    *   Uses Hugging Face `transformers` for sentence embeddings and sentiment analysis.
+    *   Utilizes `nltk` (Natural Language Toolkit) for sentence tokenization. NLTK data (`punkt` and `stopwords`) will be downloaded automatically on the first run if not found.
+*   **Interactive UI**: Built with Streamlit for selecting characters and visualizing analysis results.
+*   **Simulated TensorStorage**: All generated tensors and metadata are stored and managed by the `EmbeddedTensorStorage` class from `tensor_storage_utils.py`.
 
-Using snippets from "Alice's Adventures in Wonderland," it allows you to:
+## Setup and Running the Demo
 
-1.  **Load & Process Story Data:** The script "reads" parts of the story and uses AI (NLP models) to derive various tensor representations.
-2.  **Select Characters:** You can choose two characters (e.g., Alice and the Queen).
-3.  **Analyze Evolution:** The demo then shows:
-    * **Interaction Strength:** How frequently these two characters are mentioned together.
-    * **Sentiment Score:** An approximation of how the main character is portrayed when the related character is also present.
-4.  **Visualize Changes:** These insights are plotted, showing trends across the narrative.
+1.  **Prerequisites**:
+    *   Ensure Python 3.8+ is installed.
+    *   It's highly recommended to use a Python virtual environment.
 
-You can also peek into the kinds of "tensor" data the simulated Tensorus stores.
-
-## How is Tensorus Different from a Vector Database Here? (Conceptual & Simulated)
-
-This is where the conceptual power of Tensorus, as simulated in this demo, comes in!
-
-**A Typical Vector Database might...**
-
-* Store each chapter of "Alice in Wonderland" as a single "vector" (a numerical fingerprint of its general meaning).
-* Allow searching for chapters "similar" in topic.
-* Useful for general semantic similarity.
-
-**Tensorus (as simulated here) aims for much more:**
-
-1.  **Stores Richer, Multi-Faceted Data (Not Just Single Vectors):**
-    For each section of the story, the simulated Tensorus (`EmbeddedTensorStorage`) stores *multiple, distinct types of "tensors"*:
-    * **Sentence Embeddings (2D Tensor):** Captures the meaning of each individual sentence.
-    * **Character Sentiment Flow (3D Tensor):** For each sentence and character, notes the sentiment (positive, neutral, negative).
-    * **Character Interaction Matrix (2D Tensor):** For each section, maps which characters appeared together in sentences.
-
-2.  **Analyzes Internal Structure and Relationships:**
-    * Vector databases help find *similar items*.
-    * Tensorus (simulated here) allows AI agents to look *inside* these richer tensor structures and *across* them to perform complex analyses.
-
-3.  **Tracks Evolution and Change (Dynamic Insights):**
-    * By storing detailed tensors for *each section in sequence*, the "Story Analyst" logic can track how interactions and sentiments *change*. This is hard with single "average" vectors per chapter.
-
-4.  **Enables More Complex, Agentic Queries (Conceptual):**
-    * The demo simulates answering questions like, "How does Alice's *relationship dynamic* with the Queen evolve?" by processing sequences of interaction and sentiment tensors from the `EmbeddedTensorStorage`.
-
-## Technical Implementation Insights (Inside `story_analyzer_demo.py`)
-
-The Python script (`story_analyzer_demo.py`) brings these concepts to life through simulation:
-
-*   **Data Ingestion (`ingest_story_data()`):**
-    *   This function processes the raw text from `STORY_DATA`.
-    *   For each story section, it generates and stores multiple tensors in the `EmbeddedTensorStorage` instance (our simulated Tensorus):
-        1.  **Sentence Embeddings Tensor (`SENTENCE_EMBEDDINGS_DS`):**
-            *   **What it is:** A 2D tensor where each row is an embedding (vector) representing the semantic meaning of a single sentence in that section.
-            *   **Achieves:** Allows for understanding the text at a granular, sentence-by-sentence level.
-        2.  **Character Sentiment Flow Tensor (`CHARACTER_SENTIMENT_DS`):**
-            *   **What it is:** A 3D tensor with dimensions `[number_of_sentences, number_of_characters, 3 (sentiment scores for neg, neut, pos)]`. For each sentence, it indicates the sentiment associated with each character present in that sentence.
-            *   **Achieves:** Enables tracking of how a character's portrayal or the context around them changes sentimentally through the narrative.
-        3.  **Character Interaction Matrix (`CHARACTER_INTERACTION_DS`):**
-            *   **What it is:** A 2D tensor with dimensions `[number_of_characters, number_of_characters]`. Each cell `(i, j)` stores a count of sentences within that section where character `i` and character `j` co-occur.
-            *   **Achieves:** Provides a quantitative measure of interaction frequency between character pairs within each story section.
-
-*   **Analysis Logic (`analyze_character_evolution()`):**
-    *   This function simulates an AI agent querying the `EmbeddedTensorStorage`.
-    *   It fetches the relevant `Character Interaction Matrix` and `Character Sentiment Flow` tensors for the selected characters and book.
-    *   It then processes these tensors sequentially (section by section) to:
-        *   Calculate "interaction strength" (from the interaction matrix).
-        *   Determine the average "sentiment score" for the target character when the related character is also contextually relevant (derived from the sentiment flow tensor).
-    *   These derived data points are then used to plot the evolution graphs.
-
-This simulation demonstrates how structured, multi-faceted tensor data, managed by a system like Tensorus, could allow AI agents to perform more sophisticated and nuanced analyses than relying on single vector representations alone.
-
-**In Simple Terms: The "Simulated Tensorus Difference"**
-
-* **Vector Database:** Like a librarian who can find you books on "cats."
-* **Tensorus (simulated):** Like a literary scholar who understands character moods and relationships within each book and can explain their evolution across a series.
-
-## What This Demo *Doesn't* Do
-
-*   **Not a Comprehensive Literary Analysis Tool:** This demo focuses on demonstrating specific tensor operations and data structure concepts. It is not intended as a full-fledged literary analysis platform.
-*   **Simplified NLP:** The literary analysis (e.g., sentiment scoring, character identification) is based on standard, pre-trained NLP models and simplified rules for the demo's purpose. Deeper, more context-aware NLP would be used in a production system.
-*   **Limited Dataset:** The insights are derived from a very small, specific dataset (snippets of "Alice in Wonderland") chosen for clarity.
-*   **No True Agentic Behavior:** While we refer to "agent logic," the analysis is procedural. A full Tensorus system would support more autonomous AI agents.
-
-## Running the Demo
-
-1.  **Prerequisites:**
-    * Python 3.8+
-    * Install required libraries:
+2.  **Clone the Repository and Install Dependencies**:
+    *   Clone this repository to your local machine.
+    *   Navigate to the repository's root directory.
+    *   Install the required packages by running:
         ```bash
-        pip install streamlit torch pandas numpy transformers nltk scikit-learn
+        pip install -r requirements.txt
         ```
-    * Download NLTK's 'punkt' tokenizer (if not already present, though `sentence-transformers` often handles its own dependencies):
-        ```bash
-        python -m nltk.downloader punkt
-        ```
+    *   (The `requirements.txt` file should be present in the root of the repository).
 
-2.  **Save the Code:**
-    * Save the demo script as `story_analyzer_demo.py`.
-
-3.  **Run with Streamlit:**
-    * Open your terminal, navigate to the directory where you saved the file.
-    * Execute:
+3.  **Run the Demo**:
+    *   Open your terminal and ensure your virtual environment is activated.
+    *   Navigate to the repository's root directory.
+    *   Execute the command:
         ```bash
         streamlit run story_analyzer_demo.py
         ```
+    *   The application will open in your web browser.
 
-4.  **Interact:**
-    * In the sidebar of the web application that opens, click "Load and Ingest Sample Story Data." This will process the snippets from "Alice's Adventures in Wonderland" and populate the simulated `EmbeddedTensorStorage` with derived tensors. (This might take a moment the first time as NLP models are loaded).
-    * Once ingested, select characters from the dropdowns and click the "Analyze..." button to see their relationship and sentiment evolution!
-    * You can also explore the "Explore Stored Tensors (Simulated TensorStorage Peek)" section to get a glimpse of the raw tensor shapes and metadata being managed.
+4.  **NLTK Data Download (First Run)**:
+    *   On its first run, the application will check for necessary NLTK data packages (`punkt` for sentence tokenization and `stopwords`). If these are not found, it will attempt to download them automatically. Please ensure you have an internet connection during the first run. Subsequent runs will use the cached data.
 
-## What's Next for Tensorus?
+## How to Interact with the Demo
 
-This demo is a conceptual illustration using an embedded, in-memory simulation of Tensorus's storage and data interaction ideas. The full Tensorus project aims to:
+1.  **Load and Ingest Data**:
+    *   In the sidebar, click the "Load and Ingest Sample Story Data" button.
+    *   A spinner will indicate that the story snippets are being processed, tensors are being generated, and data is being ingested into the simulated TensorStorage. This might take a few moments, especially on the first run due to NLP model loading.
+    *   A success message will appear in the sidebar upon completion.
 
-* Provide robust, persistent storage backends for these rich tensor structures.
-* Offer more powerful `TensorOps` for complex manipulations.
-* Develop a more advanced query language (NQL) that can naturally query across these diverse tensor types.
-* Build a comprehensive framework for deploying various AI agents that can leverage Tensorus for real-world applications in finance, education, commerce, research, and beyond!
+2.  **Analyze Character Evolution**:
+    *   Once the data is ingested, the "Character Evolution Analysis" section will become available.
+    *   Select a "Main Character" from the first dropdown.
+    *   Optionally, select a "Related Character" from the second dropdown if you want to analyze interactions and the main character's sentiment in the context of this related character. Select "None" if you only want to see the main character's overall sentiment evolution.
+    *   Click the "Analyze..." button.
+    *   The application will display line charts showing:
+        *   Interaction strength between the selected characters over the narrative sections (if a related character is chosen).
+        *   Sentiment score for the main character over the narrative sections.
+    *   You can expand sections to view the underlying data tables.
 
-We hope this demo gives you a taste of the differentiated value an agentic tensor database like Tensorus can provide!
+3.  **Explore Stored Tensors**:
+    *   In the "Explore Stored Tensors (Simulated TensorStorage Peek)" section, you can select a dataset (e.g., `sentence_embeddings_store`, `character_sentiment_store`).
+    *   Click "Show First 3 Records from Selected Dataset" to view the metadata and a preview of the tensor data for the first few records in that dataset. This gives insight into how data is structured in the `EmbeddedTensorStorage`.
+
+This demo illustrates how a Tensor Database philosophy, even when simulated, can support more complex and nuanced data analysis compared to traditional data stores by managing interconnected, multi-modal data representations.

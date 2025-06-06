@@ -1,60 +1,68 @@
-# Tensorus: Sample Applications & Concept Demos
+# Commercial-Grade Python Demos with TensorStorage Utility
 
-Welcome to the Tensorus sample applications repository! This collection of demos is designed to illustrate the core concepts and potential of **Tensorus**, an agentic tensor database.
+This repository showcases a collection of commercial-grade Python demonstration applications. Each demo highlights specific data processing and analysis capabilities, leveraging a shared, simulated Tensor Database utility for managing complex data structures. The demos are built with Streamlit for interactive user interfaces and integrate various NLP tools.
 
-## What is Tensorus?
+## Features
 
-**Tensorus** is an agentic tensor database designed to power advanced AI applications by managing and enabling operations on rich, multi-dimensional tensor data. It goes beyond traditional databases, and even vector databases, by treating data as interconnected, structured tensors. This approach allows AI agents to perform complex analyses, understand nuanced relationships, and gain deeper insights from diverse data modalities.
+*   **Two Demo Applications**:
+    *   **Financial News Impact Analyzer**: Demonstrates how different context retrieval strategies (Vector DB vs. Tensor DB) can impact the inputs for a financial prediction model. Utilizes Hugging Face Transformers for embeddings and sentiment analysis.
+    *   **Story Analyzer**: Analyzes character relationships and sentiment evolution in literary texts, showcasing the storage and retrieval of structured tensor data (sentence embeddings, sentiment flows, interaction matrices). Uses Hugging Face Transformers and NLTK.
+*   **Simulated Tensor Database**: Features `EmbeddedTensorStorage` (in `tensor_storage_utils.py`), an in-memory Python class simulating functionalities of a Tensor Database like Tensorus. It allows for organized storage and retrieval of tensors and their associated metadata.
+*   **NLP Integration**:
+    *   Utilizes Hugging Face `transformers` for tasks like text embedding generation and sentiment analysis.
+    *   Employs `nltk` (Natural Language Toolkit) for sentence tokenization in the Story Analyzer demo.
+*   **Interactive UIs**: Built with Streamlit, providing user-friendly interfaces to interact with the demos and visualize results.
+*   **Conceptual Unit Tests**: Includes illustrative unit test structures (`pytest` style) for both demo applications, showcasing how one might approach testing such systems.
 
-The goal of Tensorus is to provide a robust foundation for building AI systems that can:
-*   Understand and reason about complex data structures.
-*   Fuse information from multiple sources and modalities.
-*   Model and predict dynamic interactions and evolutions.
-*   Enable AI agents to actively query, manipulate, and learn from data in more sophisticated ways.
+## Structure
 
-## Purpose of This Repository
+Key files and their purpose:
 
-This repository hosts a series of sample applications and use cases that demonstrate the capabilities and conceptual underpinnings of Tensorus. Each demo is a self-contained Streamlit application that explores a specific problem domain, showcasing how Tensorus's approach to data management and interaction can lead to more powerful AI solutions.
+*   `financial_news_impact_demo.py`: Streamlit application demonstrating RAG context comparison for financial news.
+*   `story_analyzer_demo.py`: Streamlit application for analyzing character sentiment and interactions in stories.
+*   `tensor_storage_utils.py`: Contains the `EmbeddedTensorStorage` class, a simulated Tensor Database used by both demos.
+*   `test_financial_news_impact_demo.py`: Conceptual unit tests for the financial news demo.
+*   `test_story_analyzer_demo.py`: Conceptual unit tests for the story analyzer demo.
+*   `requirements.txt`: Lists project dependencies (to be created in a subsequent step).
+*   `README.md`: This file - provides an overview of the repository.
+*   `README_financial_news_impact_demo.md`: Specific details for the Financial News Impact demo.
+*   `README_story_analyzer_demo.md`: Specific details for the Story Analyzer demo.
 
-**Important Note on Simulation:** To make these demos easily runnable, understandable, and self-contained, they currently use an *in-memory simulation* of Tensorus's core storage and data handling functionalities (typically through a Python class like `EmbeddedTensorStorage` within each demo script). They are designed for conceptual illustration and **do not require a separate Tensorus database installation.**
+## Setup and Running Demos
 
-## Available Demos
+1.  **Clone the Repository**:
+    ```bash
+    git clone <repository_url>
+    cd <repository_directory>
+    ```
 
-Here's an overview of the sample applications you can explore:
+2.  **Create a Virtual Environment (Recommended)**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
 
-### 1. Financial News Impact Demo
+3.  **Install Dependencies**:
+    Make sure you have `requirements.txt` in your project directory (it will be created in a later step). Then run:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-*   **Description:** This demo illustrates how Tensorus can provide richer, multi-modal context for AI models to predict the impact of financial news on a network of assets. It contrasts the Tensorus approach (using multiple, structured tensors per news event) with traditional vector database approaches (using a single embedding per event) for Retrieval Augmented Generation (RAG).
-*   **Key Tensorus Concepts Demonstrated:**
-    *   Storing multi-modal data (news text, market features, sentiment scores) as distinct, yet related, tensors.
-    *   Enabling Retrieval Augmented Generation (RAG) with rich, multi-faceted tensor context rather than single vectors.
-    *   Representing textual nuances (e.g., token-level embeddings, simulated attention flows) and quantitative data (e.g., market context, sentiment metrics) in a structured tensor format.
-    *   Facilitating more informed inputs for hypothetical downstream predictive models by providing comprehensive event profiles.
-*   **How to Run:** For detailed prerequisites, setup, and execution instructions, please see:
-    *   ➡️ **[Details and Setup Instructions](README_financial_news_impact_demo.md)**
+4.  **Run the Demos**:
+    *   **Financial News Impact Demo**:
+        ```bash
+        streamlit run financial_news_impact_demo.py
+        ```
+    *   **Story Analyzer Demo**:
+        ```bash
+        streamlit run story_analyzer_demo.py
+        ```
+        On the first run of the Story Analyzer demo, NLTK will download necessary data packages (`punkt` for sentence tokenization and `stopwords`). Ensure you have an internet connection.
 
-### 2. Smart Story Analyzer Demo
+## Note on TensorStorage
 
-*   **Description:** This demo showcases how Tensorus can be used to analyze character relationships and sentiment evolution within literary texts. It processes story snippets, stores various analytical representations as tensors, and allows users to explore how character dynamics change throughout the narrative.
-*   **Key Tensorus Concepts Demonstrated:**
-    *   Transforming textual narratives into multiple structured tensors (e.g., sentence embeddings, character-specific sentiment flows, character interaction matrices).
-    *   Analyzing the temporal evolution of relationships and sentiments by operating on sequences of these tensors.
-    *   Enabling more nuanced queries about character dynamics beyond simple keyword or similarity searches.
-    *   Storing and retrieving complex relational data (like character interactions and sentiments) in a way that AI agents can easily process for insights.
-*   **How to Run:** For detailed prerequisites, setup, and execution instructions, please see:
-    *   ➡️ **[Details and Setup Instructions](README_story_analyzer_demo.md)**
+The `EmbeddedTensorStorage` class provided in `tensor_storage_utils.py` is a simplified, in-memory simulation designed for these demonstrations. It is not intended for production use as a persistent, scalable Tensor Database. It serves to illustrate the concepts of storing and retrieving complex tensor data structures within the context of the demo applications. For production scenarios, a dedicated Tensor Database solution like Tensorus would be more appropriate.
 
 ---
 
-*(More demos may be added over time, showcasing other use cases and Tensorus features.)*
-
-## General Notes on Running Demos
-
-*   **Streamlit Applications:** Each demo in this repository is a self-contained Streamlit application. Streamlit provides an easy way to create interactive web apps for machine learning and data science projects.
-*   **Prerequisites:**
-    *   Generally, you will need **Python 3.8+** and `pip` (the Python package installer) installed on your system.
-    *   Each demo has its own specific Python library requirements (e.g., `streamlit`, `torch`, `pandas`, `transformers`, `nltk`). These are listed in the individual README files for each demo.
-*   **Simulation Aspect:** As mentioned, these demos use an embedded, in-memory simulation of Tensorus's storage and data handling capabilities (via a Python class within each script). They are designed for conceptual illustration and do not require a separate, external Tensorus database installation. This makes them easy to download and run directly.
-*   **Data Ingestion:** Most demos will include a step (usually a button in the Streamlit UI) to "Load and Ingest Sample Data." This process involves generating tensor representations from raw sample data (like text or structured information) and populating the in-memory simulated TensorStorage. This step might take a few moments, especially on the first run, as NLP models might need to be downloaded and initialized.
-
-We encourage you to explore these demos to get a better understanding of how Tensorus can empower next-generation AI applications. Please refer to the specific README file within each demo's directory for detailed instructions.
+*This README provides a general guide to the repository. For specific details on each demo, please refer to their respective README files.*

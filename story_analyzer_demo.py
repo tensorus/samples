@@ -178,7 +178,7 @@ try:
     import nltk
     
     # Download all required NLTK data
-    required_nltk_data = ['punkt', 'stopwords']
+    required_nltk_data = ['punkt', 'stopwords', 'punkt_tab']
     
     for data in required_nltk_data:
         try:

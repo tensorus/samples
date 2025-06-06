@@ -23,7 +23,7 @@ Key files and their purpose:
 *   `tensor_storage_utils.py`: Contains the `EmbeddedTensorStorage` class, a simulated Tensor Database used by both demos.
 *   `test_financial_news_impact_demo.py`: Conceptual unit tests for the financial news demo.
 *   `test_story_analyzer_demo.py`: Conceptual unit tests for the story analyzer demo.
-*   `requirements.txt`: Lists project dependencies (to be created in a subsequent step).
+*   `requirements.txt`: Lists project dependencies.
 *   `README.md`: This file - provides an overview of the repository.
 *   `README_financial_news_impact_demo.md`: Specific details for the Financial News Impact demo.
 *   `README_story_analyzer_demo.md`: Specific details for the Story Analyzer demo.
@@ -43,7 +43,7 @@ Key files and their purpose:
     ```
 
 3.  **Install Dependencies**:
-    Make sure you have `requirements.txt` in your project directory (it will be created in a later step). Then run:
+    Make sure you have `requirements.txt` in your project directory. Then run:
     ```bash
     pip install -r requirements.txt
     ```
@@ -57,7 +57,42 @@ Key files and their purpose:
         ```bash
         streamlit run story_analyzer_demo.py
         ```
-        On the first run of the Story Analyzer demo, NLTK will download necessary data packages (`punkt` for sentence tokenization and `stopwords`). Ensure you have an internet connection.
+
+## Troubleshooting / Offline Usage
+
+Both demo applications rely on external resources that are typically downloaded on their first run. This requires an active internet connection.
+
+### Hugging Face Transformers Models
+
+The demos download pre-trained models from the Hugging Face Hub using the `transformers` library. The specific models used are:
+*   `sentence-transformers/all-MiniLM-L6-v2` (for text embeddings)
+*   `distilbert-base-uncased-finetuned-sst-2-english` (for sentiment analysis)
+
+**Offline Mode:**
+If you need to run these demos in an environment without internet access, you'll need to download these models beforehand on a machine with internet access.
+1.  **Download Models**: You can download models manually or by running the demos once with an internet connection, which will cache them locally (usually in `~/.cache/huggingface/transformers/`).
+2.  **Using Offline Mode**: Refer to the official Hugging Face documentation for detailed instructions on setting up and using offline mode:
+    *   [Hugging Face Transformers Offline Mode Documentation](https://huggingface.co/docs/transformers/installation#offline-mode)
+3.  This typically involves ensuring the downloaded model files are in the correct cache directory or setting environment variables such as `TRANSFORMERS_OFFLINE=1` and potentially `HF_HOME` to point to your cache.
+
+### NLTK Data Packages
+
+The Story Analyzer demo (`story_analyzer_demo.py`) uses NLTK for sentence tokenization and requires the `punkt` and `stopwords` data packages.
+*   **Automatic Download**: The script attempts to download these automatically on the first run if they are not found. This requires an internet connection.
+*   **Manual Download**: If automatic download fails, you can download these packages manually:
+    1.  Open a Python interpreter in your activated virtual environment:
+        ```python
+        import nltk
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        ```
+    2.  Alternatively, use the command line:
+        ```bash
+        python -m nltk.downloader punkt stopwords
+        ```
+    *   For more information, refer to the [NLTK Data Documentation](https://www.nltk.org/data.html).
+
+The applications are designed to provide error messages if these resources cannot be accessed, guiding you to these offline setup instructions.
 
 ## Note on TensorStorage
 

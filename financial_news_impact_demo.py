@@ -42,9 +42,8 @@ def load_nlp_models() -> Tuple[AutoTokenizer, AutoModel, pipeline]:
             - sentiment_analyzer (pipeline): A Hugging Face pipeline for sentiment analysis
                                              (e.g., 'distilbert-base-uncased-finetuned-sst-2-english').
     Raises:
-        Exception: If any model fails to load, an error is logged, and the exception
-                   is re-raised, which Streamlit will typically display.
-                   Consider more specific exception handling for production.
+        RuntimeError: If any model fails to load, indicating a critical issue
+                      after logging and displaying an error in Streamlit.
     """
     try:
         # Using a lighter, general-purpose sentence transformer model for speed.
@@ -57,19 +56,30 @@ def load_nlp_models() -> Tuple[AutoTokenizer, AutoModel, pipeline]:
         )
         logger.info("NLP models (tokenizer, sentence-transformer, sentiment_analyzer) loaded successfully.")
         return tokenizer, model, sentiment_analyzer
-    except Exception as e:
-        logger.error(f"Error loading NLP models: {e}", exc_info=True)
-        st.error(f"Fatal Error: Could not load critical NLP models. Please check model names and internet connection. Details: {e}")
-        # Re-raise the exception to halt execution if models are critical,
-        # or handle more gracefully depending on application requirements.
-        raise
+    except OSError as e:
+        offline_docs_url = "https://huggingface.co/docs/transformers/installation#offline-mode"
+        error_message = (
+            "Failed to download NLP models from Hugging Face. This is often due to network issues. "
+            "Please check your internet connection. \n\nIf you need to work offline, "
+            f"refer to Hugging Face's documentation on offline mode: {offline_docs_url}"
+        )
+        logger.error(f"OSError during NLP model loading: {e}. {error_message}", exc_info=True)
+        st.error(error_message)
+        # Re-raise as a RuntimeError to be caught by the global handler, ensuring app stops.
+        raise RuntimeError(f"Model download failed (OSError): {e}") from e
+    except Exception as e: # Catch any other exception during model loading
+        logger.error(f"An unexpected error occurred while loading NLP models: {e}", exc_info=True)
+        st.error(f"Fatal Error: Could not load critical NLP models. Details: {e}")
+        # Re-raise as a RuntimeError to ensure consistent handling by the global try-except.
+        raise RuntimeError(f"Model loading failed (General Exception): {e}") from e
 
 # Attempt to load models globally; if this fails, the app should not proceed.
 try:
     tokenizer, model, sentiment_analyzer = load_nlp_models()
-except Exception:
-    # Stop the Streamlit app if models can't be loaded.
-    # Add a more user-friendly message or recovery mechanism if appropriate.
+except RuntimeError: # Catch the re-raised RuntimeError from load_nlp_models
+    # The error message is already displayed by st.error within load_nlp_models.
+    # st.stop() will halt the script here, preventing further execution.
+    logger.info("Application halted due to failure in loading NLP models.")
     st.stop()
 
 

@@ -25,28 +25,59 @@ logger = logging.getLogger(__name__)
 # Ensures necessary NLTK resources are available.
 try:
     import nltk
+    import urllib.error # For catching network errors during NLTK download
+
     required_nltk_data = ['punkt', 'stopwords']
+    nltk_data_doc_url = "https://www.nltk.org/data.html"
+    manual_download_cmd = "python -m nltk.downloader punkt stopwords"
+
     for data_package in required_nltk_data:
         try:
             # Check if the resource is already available
-            nltk.data.find(f'tokenizers/{data_package}')
-            logger.info(f"NLTK resource '{data_package}' found.")
+            # NLTK's find checks specific paths; for tokenizers, it's 'tokenizers/<package>'
+            resource_path = f'tokenizers/{data_package}' if data_package == 'punkt' else f'corpora/{data_package}'
+            if data_package == 'stopwords': resource_path = f'corpora/{data_package}' # stopwords is in corpora
+
+            nltk.data.find(resource_path)
+            logger.info(f"NLTK resource '{data_package}' found at '{resource_path}'.")
         except LookupError:
-            # If not found, display info and download
-            st.info(f"Downloading NLTK resource '{data_package}' (this will only happen once)...")
-            nltk.download(data_package, quiet=True)
-            logger.info(f"NLTK resource '{data_package}' downloaded.")
-    # Verify 'punkt' specifically as it's crucial for sentence tokenization
-    nltk.data.find('tokenizers/punkt')
+            logger.info(f"NLTK resource '{data_package}' not found. Attempting download...")
+            st.info(f"Downloading NLTK resource '{data_package}' (this may take a moment)...")
+            try:
+                nltk.download(data_package, quiet=True)
+                logger.info(f"NLTK resource '{data_package}' downloaded successfully.")
+                # Verify after download
+                nltk.data.find(resource_path)
+                logger.info(f"NLTK resource '{data_package}' verified after download.")
+            except (OSError, urllib.error.URLError) as e_download: # Catch network/filesystem errors during download
+                error_message = (
+                    f"Failed to download NLTK data package '{data_package}'. This might be due to network issues or file permission problems. "
+                    f"Please check your internet connection and ensure NLTK can write to its data directory. "
+                    f"You can also try downloading manually: `{manual_download_cmd}`. "
+                    f"For more information, see: {nltk_data_doc_url}"
+                )
+                logger.error(f"{error_message} (Error: {e_download})", exc_info=True)
+                st.error(error_message)
+                st.stop() # Critical for app functionality
+            except Exception as e_unknown_download: # Catch any other unexpected error during download
+                logger.error(f"An unexpected error occurred while downloading NLTK data '{data_package}': {e_unknown_download}", exc_info=True)
+                st.error(f"Unexpected error downloading NLTK resource '{data_package}': {e_unknown_download}")
+                st.stop()
+        except Exception as e_find: # Catch errors from nltk.data.find itself (other than LookupError)
+             logger.error(f"Error finding NLTK resource '{data_package}': {e_find}", exc_info=True)
+             st.error(f"Could not verify NLTK resource '{data_package}': {e_find}")
+             st.stop()
+
+
 except ImportError:
     # NLTK itself is not installed
-    st.error("NLTK package not found. Please install it: pip install nltk")
-    logger.error("NLTK package not found.")
+    st.error("NLTK package not found. Please install it by running: pip install nltk")
+    logger.error("NLTK package not found critical error.")
     st.stop() # Stop the app if NLTK is missing
-except Exception as e:
-    # Catch any other errors during NLTK data handling
-    st.error(f"Error initializing NLTK data: {e}. Please ensure NLTK can download resources.")
-    logger.error(f"NLTK data initialization error: {e}", exc_info=True)
+except Exception as e_nltk_general:
+    # Catch any other top-level errors during NLTK setup phase
+    st.error(f"A critical error occurred during NLTK setup: {e_nltk_general}. The application cannot proceed.")
+    logger.error(f"NLTK general setup error: {e_nltk_general}", exc_info=True)
     st.stop() # Stop the app if NLTK data can't be set up
 
 # --- NLP Model Loading ---
@@ -85,16 +116,26 @@ def load_nlp_models() -> Tuple[pipeline, AutoTokenizer, AutoModel]:
         )
         logger.info("NLP models (sentiment_analyzer, embedding_tokenizer, embedding_model) loaded successfully.")
         return sentiment_analyzer, embedding_tokenizer, embedding_model
-    except Exception as e:
-        logger.error(f"Fatal error loading NLP models: {e}", exc_info=True)
-        # Display error in Streamlit and re-raise to stop app execution if models are critical
-        st.error(f"Could not load essential NLP models: {e}. The application cannot continue. Please check model names, network connection, or Hugging Face Hub status.")
-        raise RuntimeError(f"NLP model loading failed: {e}") from e
+    except OSError as e:
+        offline_docs_url = "https://huggingface.co/docs/transformers/installation#offline-mode"
+        error_message = (
+            "Failed to download NLP models from Hugging Face. This is often due to network issues. "
+            "Please check your internet connection. \n\nFor offline usage, "
+            f"refer to Hugging Face's documentation on offline mode: {offline_docs_url}"
+        )
+        logger.error(f"OSError during NLP model loading for Story Analyzer: {e}. {error_message}", exc_info=True)
+        st.error(error_message)
+        raise RuntimeError(f"Story Analyzer model download failed (OSError): {e}") from e
+    except Exception as e: # Catch any other exception
+        logger.error(f"Fatal error loading NLP models for Story Analyzer: {e}", exc_info=True)
+        st.error(f"Could not load essential NLP models for Story Analyzer: {e}. The application cannot continue. Please check model names, network connection, or Hugging Face Hub status.")
+        raise RuntimeError(f"Story Analyzer NLP model loading failed: {e}") from e
 
 # Load models globally. If this fails, the app will stop due to the error handling in load_nlp_models.
 try:
     sentiment_analyzer, embedding_tokenizer, embedding_model = load_nlp_models()
-except RuntimeError:
+except RuntimeError: # Catch the re-raised RuntimeError
+    logger.info("Application halted due to failure in loading NLP models for Story Analyzer.")
     st.stop() # Ensure app stops if models didn't load.
 
 # --- Sample Story Data (Alice's Adventures in Wonderland - Snippets) ---
@@ -255,7 +296,7 @@ def analyze_character_sentiment_and_interaction(
                 # sentiment_analyzer returns a list of dicts; we take the first.
                 sent_sentiment_result = sentiment_analyzer(sentence)[0]
                 label = sent_sentiment_result.get('label', 'NEUTRAL') # Default to NEUTRAL if label missing
-                
+
                 # Map sentiment label to an index: 0 for Negative, 1 for Neutral, 2 for Positive
                 if label == 'POSITIVE':
                     sent_sentiment_category_idx = 2
@@ -588,7 +629,7 @@ def analyze_character_evolution(
                     avg_sentiment_score = scores.float().mean().item()
             elif sentiment_tensor is not None:
                 logger.warning(f"Sentiment tensor for section {full_id} (record: {sentiment_meta_entry['record_id']}) has unexpected shape {sentiment_tensor.shape} or char index out of bounds ({target_char_idx}).")
-        
+
         evolution_data_points.append({
             "full_id": full_id,
             "chapter": current_section_meta.get("chapter_title", "N/A"), # Safely get chapter title

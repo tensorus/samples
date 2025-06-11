@@ -25,49 +25,39 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             const models = await response.json();
 
-            // Clear placeholder (which is now a specific div, not the container itself)
-            const loadingPlaceholder = document.getElementById('loading-placeholder-container');
-            if (loadingPlaceholder) {
-                loadingPlaceholder.remove();
-            }
-
+            modelListContainer.innerHTML = ''; // Clear placeholder or previous content
             if (models.length === 0) {
-                modelListContainer.innerHTML = '<div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-8"><p class="text-gray-500 dark:text-gray-400">No models available to display.</p></div>';
+                modelListContainer.innerHTML = '<div class="col"><p>No models available to display.</p></div>';
                 return;
             }
 
             models.forEach(model => {
-                const modelCard = document.createElement('div');
-                // Tailwind classes for the card, matching the example in models.html head_extra
-                modelCard.className = 'bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden flex flex-col h-full';
+                const col = document.createElement('div');
+                col.className = 'col'; // Bootstrap will handle responsive column behavior in row-cols-*
 
                 let predictButtonHtml = '';
+                // Only add mock predict button for xgboost_regressor as per initial spec
                 if (model.id === 'xgboost_regressor') {
-                    predictButtonHtml = `<button class="mt-auto text-sm py-1 px-3 border border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-700/30 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 mock-predict-btn" data-model-id="${escapeHtml(model.id)}" data-model-name="${escapeHtml(model.name)}">Mock Predict</button>`;
+                    predictButtonHtml = `<button class="btn btn-sm btn-outline-primary mt-auto mock-predict-btn" data-model-id="${escapeHtml(model.id)}" data-model-name="${escapeHtml(model.name)}">Mock Predict</button>`;
                 }
 
-                // Using example structure from models.html comments
-                modelCard.innerHTML = `
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h5 class="text-xl font-semibold mb-1 text-gray-800 dark:text-white">${escapeHtml(model.name)}</h5>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">${escapeHtml(model.category)}</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow">${escapeHtml(model.description)}</p>
-                        <div class="mb-3">
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1"><strong>Example Input:</strong></p>
-                            <code class="block bg-gray-100 dark:bg-gray-700 p-1.5 rounded-sm text-xs overflow-x-auto whitespace-pre-wrap break-all">${escapeHtml(model.example_input)}</code>
+                col.innerHTML = `
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${escapeHtml(model.name)}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">${escapeHtml(model.category)}</h6>
+                            <p class="card-text small flex-grow-1">${escapeHtml(model.description)}</p>
+                            <p class="card-text mb-1"><small><strong>Example Input:</strong><br><code>${escapeHtml(model.example_input)}</code></small></p>
+                            <p class="card-text"><small><strong>Example Output:</strong><br><code>${escapeHtml(model.example_output)}</code></small></p>
+                            <div class="mock-result-display mt-2"></div> <!-- Div for prediction result -->
+                            ${predictButtonHtml}
                         </div>
-                        <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1"><strong>Example Output:</strong></p>
-                            <code class="block bg-gray-100 dark:bg-gray-700 p-1.5 rounded-sm text-xs overflow-x-auto whitespace-pre-wrap break-all">${escapeHtml(model.example_output)}</code>
+                        <div class="card-footer bg-transparent border-top-0 pt-0">
+                            <a href="${escapeHtml(model.doc_link || '#')}" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer">Documentation</a>
                         </div>
-                        <div class="mock-result-display mt-3 text-xs font-mono break-all p-2 rounded bg-gray-50 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 min-h-[30px]"></div>
-                        ${predictButtonHtml ? `<div class="mt-4">${predictButtonHtml}</div>` : ''}
-                    </div>
-                    <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-                        <a href="${escapeHtml(model.doc_link || '#')}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 rounded-sm" target="_blank" rel="noopener noreferrer">Documentation</a>
                     </div>
                 `;
-                modelListContainer.appendChild(modelCard);
+                modelListContainer.appendChild(col);
             });
 
             // Add event listeners for predict buttons
@@ -82,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         } catch (error) {
-            modelListContainer.innerHTML = `<div class="col-span-1 md:col-span-2 lg:col-span-3"><p class="text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 p-3 rounded-md">Error fetching models: ${error.message}</p></div>`;
+            modelListContainer.innerHTML = `<div class="col"><p class="text-danger">Error fetching models: ${error.message}</p></div>`;
             console.error('Error fetching models:', error);
         }
     }
@@ -111,10 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error(result.error || `HTTP error ${response.status}`);
             }
 
-            resultDisplayDiv.innerHTML = `<p class="mb-0"><strong class="text-gray-700 dark:text-gray-300">Mock Prediction:</strong> <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">${escapeHtml(result.prediction)}</code></p>`;
+            resultDisplayDiv.innerHTML = `<p class="mb-0"><small><strong>Mock Prediction:</strong> <code>${escapeHtml(result.prediction)}</code></small></p>`;
 
         } catch (error) {
-            resultDisplayDiv.innerHTML = `<p class="text-red-600 dark:text-red-400 mb-0"><small>Error: ${escapeHtml(error.message)}</small></p>`;
+            resultDisplayDiv.innerHTML = `<p class="text-danger mb-0"><small>Error: ${escapeHtml(error.message)}</small></p>`;
             console.error('Mock prediction error:', error);
         } finally {
             buttonElement.textContent = originalButtonText;

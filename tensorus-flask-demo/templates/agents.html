@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Tensorus Agent Dashboard{% endblock %}
+
+{% block head_extra %}
+<style>
+    .agent-card .card-header {
+        font-size: 1.1rem;
+    }
+    .agent-card .logs-container {
+        font-size: 0.75rem; /* Smaller font for logs */
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        padding: 8px;
+        background-color: #f8f9fa; /* Light background for log area */
+        white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+        word-break: break-all;
+    }
+    .agent-card .config-list {
+        font-size: 0.8rem;
+        padding-left: 0;
+        list-style: none;
+    }
+    .agent-card .config-list li {
+       padding: 0.1rem 0;
+    }
+    .agent-card .badge {
+        font-size: 0.9em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="pb-2 mb-4 border-bottom">
+        <h1>Tensorus Agent Dashboard</h1>
+        <p class="lead">Monitor and interact with conceptual Tensorus agents. Status and logs are mock and may update periodically for demonstration.</p>
+    </div>
+
+    <div id="agent-dashboard-container" class="row row-cols-1 row-cols-lg-2 g-4">
+        <!-- Placeholder card (optional, for loading state) -->
+        <div class="col placeholder-agent-card">
+            <div class="card h-100 shadow-sm" aria-hidden="true">
+                <div class="card-header placeholder-glow"><span class="placeholder col-5"></span> <span class="placeholder col-3 float-end"></span></div>
+                <div class="card-body">
+                  <p class="card-text placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-6"></span>
+                  </p>
+                  <h6 class="placeholder-glow mt-3"><span class="placeholder col-4"></span></h6>
+                  <div class="placeholder-glow"><span class="placeholder col-12" style="height: 50px;"></span></div>
+                  <h6 class="placeholder-glow mt-3"><span class="placeholder col-3"></span></h6>
+                  <div class="placeholder-glow"><span class="placeholder col-12" style="height: 70px;"></span></div>
+                </div>
+                <div class="card-footer placeholder-glow">
+                    <span class="placeholder col-2 btn btn-sm btn-success disabled"></span>
+                    <span class="placeholder col-2 btn btn-sm btn-warning disabled ms-1"></span>
+                </div>
+            </div>
+        </div>
+        <!-- Actual agent cards will be loaded here by JavaScript -->
+        <noscript>
+            <p>This page requires JavaScript to display agents dynamically.</p>
+        </noscript>
+        <p class="loading-text w-100 text-center">Loading agent information...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/agents.js') }}"></script>
+{% endblock %}

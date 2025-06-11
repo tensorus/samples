@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Tensorus Dataset Showcase{% endblock %}
+
+{% block head_extra %}
+<style>
+    .card.h-100 {
+        display: flex;
+        flex-direction: column;
+    }
+    .card-body {
+        flex-grow: 1;
+    }
+    .card-text.small {
+        font-size: 0.875rem; /* Slightly smaller text for descriptions */
+    }
+    .badge.bg-info { /* Ensure good contrast for badges if using default Bootstrap text color */
+        color: #000 !important; /* Or use .text-dark with Bootstrap 5.1+ */
+    }
+    .properties-list {
+        padding-left: 0;
+        list-style: none;
+    }
+    .properties-list li {
+        font-size: 0.85rem;
+    }
+    .icon-prepend {
+        margin-right: 0.5em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="pb-2 mb-4 border-bottom">
+        <h1>Tensorus Dataset Showcase</h1>
+        <p class="lead">Explore a selection of datasets that can be managed and utilized within the Tensorus ecosystem. This is a conceptual demonstration.</p>
+    </div>
+
+    <div id="dataset-list-container" class="row row-cols-1 row-cols-md-2 g-4">
+        <!-- Placeholder cards (optional, good for perceived performance) -->
+        <div class="col placeholder-dataset-card">
+            <div class="card h-100" aria-hidden="true">
+                <div class="card-body">
+                  <h5 class="card-title placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                  </h5>
+                  <p class="card-text placeholder-glow">
+                    <span class="placeholder col-8"></span>
+                    <span class="placeholder col-5"></span>
+                    <span class="placeholder col-6"></span>
+                  </p>
+                </div>
+            </div>
+        </div>
+         <div class="col placeholder-dataset-card d-none d-md-block">
+            <div class="card h-100" aria-hidden="true">
+                <div class="card-body">
+                  <h5 class="card-title placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                  </h5>
+                  <p class="card-text placeholder-glow">
+                    <span class="placeholder col-8"></span>
+                    <span class="placeholder col-5"></span>
+                    <span class="placeholder col-6"></span>
+                  </p>
+                </div>
+            </div>
+        </div>
+        <!-- Actual dataset cards will be loaded here by JavaScript -->
+        <!-- Initial text if no JS or while loading -->
+        <noscript>
+            <p>This page requires JavaScript to display datasets dynamically.</p>
+        </noscript>
+        <p class="loading-text w-100 text-center">Loading datasets...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/datasets.js') }}"></script>
+{% endblock %}

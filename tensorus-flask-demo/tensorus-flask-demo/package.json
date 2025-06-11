@@ -1,3 +1,0 @@
-  ,"scripts": {
-    "build:css": "tailwindcss -i ./static/css/tailwind_input.css -o ./static/css/tailwind_output.css --watch"
-  }

@@ -4,10 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to remove placeholder elements
     function clearPlaceholders() {
         if (datasetListContainer) {
-            const placeholders = datasetListContainer.querySelectorAll('.placeholder-dataset-card');
-            placeholders.forEach(p => p.remove());
-            const loadingText = datasetListContainer.querySelector('.loading-text');
-            if (loadingText) loadingText.remove();
+            // The new placeholder is a single div with ID 'loading-placeholder-container'
+            const placeholderContainer = document.getElementById('loading-placeholder-container');
+            if (placeholderContainer) {
+                placeholderContainer.remove();
+            }
+            // Remove any lingering "Loading datasets..." text if it's separate and not part of the placeholder div
+            const loadingTextElements = datasetListContainer.querySelectorAll('.loading-text'); // Assuming class for direct text
+            loadingTextElements.forEach(lt => lt.remove());
         }
     }
 
@@ -27,22 +31,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function formatProperties(properties) {
         if (!properties || typeof properties !== 'object' || Object.keys(properties).length === 0) {
-            return '<p><small>No properties listed.</small></p>';
+            return '<p class="text-xs text-gray-500 dark:text-gray-400">No properties listed.</p>';
         }
-        let html = '<ul class="list-unstyled mb-0 properties-list">';
+        // Tailwind classes for the list and items
+        let html = '<ul class="space-y-1 text-xs text-gray-600 dark:text-gray-400">';
         for (const key in properties) {
-            html += `<li><small><strong>${escapeHtml(key)}:</strong> ${escapeHtml(properties[key])}</small></li>`;
+            html += `<li><strong class="font-medium text-gray-700 dark:text-gray-300">${escapeHtml(key)}:</strong> ${escapeHtml(properties[key])}</li>`;
         }
         html += '</ul>';
         return html;
     }
 
-    function getCategoryIcon(category) {
-        const catLower = category.toLowerCase();
-        if (catLower.includes('image')) return 'bi-image-fill'; // Filled icon
-        if (catLower.includes('time series')) return 'bi-graph-up-arrow'; // More specific
-        if (catLower.includes('tabular')) return 'bi-grid-3x3-gap-fill'; // Filled icon
-        return 'bi-file-earmark-text-fill'; // Default filled icon
+    function getCategoryIconSVG(category) {
+        // Basic placeholder SVG. A real implementation might have specific SVGs per category.
+        // Returning a generic document icon for now.
+        return `
+            <svg class="w-8 h-8 text-blue-500 dark:text-blue-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+        `;
     }
 
     async function fetchDatasets() {
@@ -58,42 +65,51 @@ document.addEventListener('DOMContentLoaded', function () {
             clearPlaceholders();
 
             if (datasets.length === 0) {
-                datasetListContainer.innerHTML = '<div class="col"><p>No datasets available to display.</p></div>';
+                datasetListContainer.innerHTML = '<div class="md:col-span-2 text-center py-8"><p class="text-gray-500 dark:text-gray-400">No datasets available to display.</p></div>';
                 return;
             }
 
             datasets.forEach(dataset => {
-                const col = document.createElement('div');
-                col.className = 'col';
+                const datasetCard = document.createElement('div');
+                // Tailwind classes for the card from datasets.html example
+                datasetCard.className = 'bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden flex flex-col h-full';
 
-                const iconClass = getCategoryIcon(dataset.category);
+                const iconSVG = getCategoryIconSVG(dataset.category);
+                const sourceBadge = `<span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-100 text-sky-700 dark:bg-sky-700 dark:text-sky-100">${escapeHtml(dataset.source)}</span>`;
 
-                col.innerHTML = `
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="bi ${iconClass} icon-prepend"></i>${escapeHtml(dataset.name)}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">
-                                ${escapeHtml(dataset.category)} -
-                                <span class="badge bg-info">${escapeHtml(dataset.source)}</span>
-                            </h6>
-                            <p class="card-text small">${escapeHtml(dataset.description)}</p>
-                            <div class="mb-2">
-                                <strong class="d-block mb-1">Properties:</strong>
-                                ${formatProperties(dataset.properties)}
-                            </div>
+                datasetCard.innerHTML = `
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex items-start mb-2">
+                            ${iconSVG}
                             <div>
-                                <strong class="d-block mb-1">Example Data Description:</strong>
-                                <p class="card-text small fst-italic"><code>${escapeHtml(dataset.example_data_description)}</code></p>
+                                <h5 class="text-xl font-semibold text-gray-800 dark:text-white">${escapeHtml(dataset.name)}</h5>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">${escapeHtml(dataset.category)} - ${sourceBadge}</p>
                             </div>
                         </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow">${escapeHtml(dataset.description)}</p>
+
+                        <div class="mb-3">
+                            <strong class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Properties:</strong>
+                            ${formatProperties(dataset.properties)}
+                        </div>
+
+                        <div>
+                            <strong class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Example Data Description:</strong>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+                                <code class="block bg-gray-100 dark:bg-gray-700/50 p-2 rounded-sm text-xs overflow-x-auto whitespace-pre-wrap break-all">${escapeHtml(dataset.example_data_description)}</code>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+                        <a href="#" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 rounded-sm">Explore Dataset</a>
                     </div>
                 `;
-                datasetListContainer.appendChild(col);
+                datasetListContainer.appendChild(datasetCard);
             });
 
         } catch (error) {
             clearPlaceholders();
-            datasetListContainer.innerHTML = `<div class="col"><p class="text-danger">Error fetching datasets: ${error.message}</p></div>`;
+            datasetListContainer.innerHTML = `<div class="md:col-span-2"><p class="text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 p-3 rounded-md">Error fetching datasets: ${error.message}</p></div>`;
             console.error('Error fetching datasets:', error);
         }
     }

@@ -2,150 +2,152 @@
 {% block title %}Core Tensorus Features{% endblock %}
 
 {% block head_extra %}
-<style>
-    #tensor-list .list-group-item,
-    #nql-results-list .list-group-item,
-    #tensor-op-result .card {
-        margin-bottom: 10px;
-        border-radius: 0.25rem;
-        border: 1px solid #dee2e6;
-    }
-    code {
-        word-break: break-all;
-    }
-    .form-select, .form-control {
-        font-size: 0.875rem; /* Slightly smaller font for form elements */
-    }
-    .badge.bg-secondary {
-        font-size: 0.75em;
-        vertical-align: middle;
-    }
-</style>
+{#
+  Removed inline styles, will be handled by Tailwind utilities.
+  JavaScript functions in core_features.js will need to be updated
+  to add appropriate Tailwind classes to dynamically generated elements
+  (e.g., for tensor items, NQL results, and tensor operation results).
+  Refer to the Tailwind CSS documentation and the classes used in the static
+  parts of this template for guidance on styling those dynamic elements.
+#}
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>Core Tensorus Features</h1>
-    <hr>
+{# Container and top margin are handled by base.html's main tag #}
+<div class="space-y-12"> {# Added spacing between sections #}
+    <section>
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6">Core Tensorus Features</h1>
+        <hr class="border-gray-200 dark:border-gray-700">
+    </section>
 
-    <h2>Tensor Storage and Retrieval</h2>
-    <p>This section demonstrates basic tensor storage and retrieval operations (simulated), including optional schema enforcement.</p>
+    <section id="tensor-storage-retrieval">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Tensor Storage and Retrieval</h2>
+        <p class="text-gray-700 dark:text-gray-300 mb-6">This section demonstrates basic tensor storage and retrieval operations (simulated), including optional schema enforcement.</p>
 
-    <h3>Existing Tensors</h3>
-    <div id="tensor-list" class="mb-4">
-        <!-- Tensors will be loaded here by JavaScript -->
-        <p>Loading tensors...</p>
-    </div>
-
-    <h4>Understanding Schema Enforcement (Demo)</h4>
-    <p>If you provide a schema name when adding a tensor, the system will attempt to validate it against a predefined (mock) schema. Try adding a tensor with:</p>
-    <ul>
-        <li>Schema Name: <code>image_schema</code>. Required metadata: <code>source_url</code>, <code>resolution</code>. Expected shape prefix: <code>[1, 224, 224,</code>. Allowed dtypes: <code>float32</code>, <code>uint8</code>.</li>
-        <li>Schema Name: <code>audio_schema</code>. Required metadata: <code>sample_rate</code>, <code>duration_seconds</code>. Expected shape prefix: <code>[1, </code>. Allowed dtypes: <code>float32</code>, <code>int16</code>.</li>
-    </ul>
-    <p><em>(Note: This is a simplified demonstration. A real system would have more robust validation.)</em></p>
-
-    <h3>Add New Tensor</h3>
-    <form id="add-tensor-form" class="mb-4">
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="tensor-name" class="form-label">Tensor Name</label>
-                <input type="text" class="form-control" id="tensor-name" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="tensor-shape" class="form-label">Shape (e.g., [3,4] or [1,224,224,3])</label>
-                <input type="text" class="form-control" id="tensor-shape" required>
-            </div>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-white mt-6 mb-3">Existing Tensors</h3>
+        <div id="tensor-list" class="mb-6 min-h-[50px] p-1 rounded-md border border-dashed border-gray-300 dark:border-gray-600">
+            <p class="text-gray-500 dark:text-gray-400 p-4">Loading tensors...</p> {# Placeholder text #}
         </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="tensor-dtype" class="form-label">Data Type (e.g., float32)</label>
-                <input type="text" class="form-control" id="tensor-dtype" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="tensor-schema-name" class="form-label">Schema Name (optional)</label>
-                <input type="text" class="form-control" id="tensor-schema-name" placeholder="e.g., image_schema, audio_schema">
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="tensor-data" class="form-label">Tensor Data (JSON array format)</label>
-            <textarea class="form-control" id="tensor-data" rows="3" required placeholder="e.g., [[1,2],[3,4]]"></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="tensor-metadata" class="form-label">Metadata (JSON string)</label>
-            <input type="text" class="form-control" id="tensor-metadata" placeholder='e.g., {"source": "demo", "resolution": "1080p"}'>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Tensor</button>
-    </form>
 
-    <hr class="my-4">
-    <h2>Tensor Operations Demo</h2>
-    <p>Perform mock operations on existing tensors. The result displayed is a symbolic description of the output tensor.</p>
-
-    <form id="tensor-op-form" class="mb-3">
-        <div class="row g-3 align-items-end">
-            <div class="col-md-3">
-                <label for="op-type" class="form-label">Operation</label>
-                <select id="op-type" class="form-select">
-                    <option value="add">Add (Tensor1 + Tensor2)</option>
-                    <option value="multiply_scalar">Multiply by Scalar (Tensor * Scalar)</option>
-                    <option value="transpose">Transpose (Tensor)</option>
-                </select>
-            </div>
-            <div class="col-md-3" id="op-tensor1-group">
-                <label for="op-tensor1-id" class="form-label">Tensor 1 ID</label>
-                <select id="op-tensor1-id" class="form-select">
-                    <!-- Options populated by JS -->
-                    <option value="">Loading...</option>
-                </select>
-            </div>
-            <div class="col-md-3" id="op-tensor2-group">
-                <label for="op-tensor2-id" class="form-label">Tensor 2 ID</label>
-                <select id="op-tensor2-id" class="form-select">
-                    <!-- Options populated by JS -->
-                    <option value="">Loading...</option>
-                </select>
-            </div>
-            <div class="col-md-2" id="op-scalar-group" style="display:none;">
-                <label for="op-scalar" class="form-label">Scalar</label>
-                <input type="number" id="op-scalar" class="form-control" value="1" step="any">
-            </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-info w-100">Do</button>
-            </div>
+        <div class="bg-blue-50 dark:bg-gray-800 p-4 rounded-md shadow">
+            <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-2">Understanding Schema Enforcement (Demo)</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">If you provide a schema name when adding a tensor, the system will attempt to validate it against a predefined (mock) schema. Try adding a tensor with:</p>
+            <ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                <li>Schema Name: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">image_schema</code>. Required metadata: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">source_url</code>, <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">resolution</code>. Expected shape prefix: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">[1, 224, 224,</code>. Allowed dtypes: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">float32</code>, <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">uint8</code>.</li>
+                <li>Schema Name: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">audio_schema</code>. Required metadata: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">sample_rate</code>, <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">duration_seconds</code>. Expected shape prefix: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">[1, </code>. Allowed dtypes: <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">float32</code>, <code class="text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">int16</code>.</li>
+            </ul>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-3"><em>(Note: This is a simplified demonstration. A real system would have more robust validation.)</em></p>
         </div>
-    </form>
 
-    <h3>Operation Result:</h3>
-    <div id="tensor-op-result" class="mt-3">
-        <p>Select an operation and tensor(s) to see the result.</p>
-    </div>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-white mt-8 mb-4">Add New Tensor</h3>
+        <form id="add-tensor-form" class="space-y-4 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="tensor-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tensor Name</label>
+                    <input type="text" id="tensor-name" required class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                </div>
+                <div>
+                    <label for="tensor-shape" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Shape (e.g., [3,4] or [1,224,224,3])</label>
+                    <input type="text" id="tensor-shape" required class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="tensor-dtype" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data Type (e.g., float32)</label>
+                    <input type="text" id="tensor-dtype" required class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                </div>
+                <div>
+                    <label for="tensor-schema-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Schema Name (optional)</label>
+                    <input type="text" id="tensor-schema-name" placeholder="e.g., image_schema, audio_schema" class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                </div>
+            </div>
+            <div>
+                <label for="tensor-data" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tensor Data (JSON array format)</label>
+                <textarea id="tensor-data" rows="3" required placeholder="e.g., [[1,2],[3,4]]" class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100"></textarea>
+            </div>
+            <div>
+                <label for="tensor-metadata" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Metadata (JSON string)</label>
+                <input type="text" id="tensor-metadata" placeholder='e.g., {"source": "demo", "resolution": "1080p"}' class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+            </div>
+            <div>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800">Add Tensor</button>
+            </div>
+        </form>
+    </section>
 
-    <hr class="my-4">
-    <h2>Natural Query Language (NQL) Demo</h2>
-    <p>Query your (mock) tensor data using a simplified NQL-like syntax. Try queries like:</p>
-    <ul>
-        <li><code>find all tensors</code></li>
-        <li><code>find tensors with name containing 'Initial'</code></li>
-        <li><code>find tensors with dtype float32</code></li>
-        <li><code>find tensors with metadata source manual</code></li>
-        <li><code>find tensors with schema_name image_schema</code></li>
-    </ul>
-    <form id="nql-query-form" class="mb-3">
-        <div class="input-group">
-            <input type="text" class="form-control" id="nql-query-string" placeholder="Enter NQL query..." required>
-            <button class="btn btn-secondary" type="submit">Query Tensors</button>
+    <hr class="my-8 border-gray-200 dark:border-gray-700">
+
+    <section id="tensor-operations">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Tensor Operations Demo</h2>
+        <p class="text-gray-700 dark:text-gray-300 mb-6">Perform mock operations on existing tensors. The result displayed is a symbolic description of the output tensor.</p>
+
+        <form id="tensor-op-form" class="mb-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+                <div class="md:col-span-1">
+                    <label for="op-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Operation</label>
+                    <select id="op-type" class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                        <option value="add">Add (Tensor1 + Tensor2)</option>
+                        <option value="multiply_scalar">Multiply by Scalar (Tensor * Scalar)</option>
+                        <option value="transpose">Transpose (Tensor)</option>
+                    </select>
+                </div>
+                <div id="op-tensor1-group" class="md:col-span-1">
+                    <label for="op-tensor1-id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tensor 1 ID</label>
+                    <select id="op-tensor1-id" class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                        <option value="">Loading...</option>
+                    </select>
+                </div>
+                <div id="op-tensor2-group" class="md:col-span-1">
+                    <label for="op-tensor2-id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tensor 2 ID</label>
+                    <select id="op-tensor2-id" class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                        <option value="">Loading...</option>
+                    </select>
+                </div>
+                <div id="op-scalar-group" class="md:col-span-1" style="display:none;">
+                    <label for="op-scalar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Scalar</label>
+                    <input type="number" id="op-scalar" value="1" step="any" class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                </div>
+                <div class="md:col-span-1 lg:col-span-1 self-end">
+                    <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-offset-gray-800">Do</button>
+                </div>
+            </div>
+        </form>
+
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-white mb-3">Operation Result:</h3>
+        <div id="tensor-op-result" class="p-4 border border-gray-200 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 shadow min-h-[60px]">
+            <p class="text-gray-500 dark:text-gray-400">Select an operation and tensor(s) to see the result.</p> {# Placeholder text #}
         </div>
-    </form>
-    <h3>NQL Results:</h3>
-    <div id="nql-results-list" class="mt-3">
-        <p>Enter a query to see results.</p>
-    </div>
+    </section>
 
+    <hr class="my-8 border-gray-200 dark:border-gray-700">
+
+    <section id="nql-demo">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Natural Query Language (NQL) Demo</h2>
+        <p class="text-gray-700 dark:text-gray-300 mb-2">Query your (mock) tensor data using a simplified NQL-like syntax. Try queries like:</p>
+        <ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300 mb-6 space-y-1 bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
+            <li><code class="text-sm text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">find all tensors</code></li>
+            <li><code class="text-sm text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">find tensors with name containing 'Initial'</code></li>
+            <li><code class="text-sm text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">find tensors with dtype float32</code></li>
+            <li><code class="text-sm text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">find tensors with metadata source manual</code></li>
+            <li><code class="text-sm text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">find tensors with schema_name image_schema</code></li>
+        </ul>
+        <form id="nql-query-form" class="mb-6">
+            <div class="flex items-center space-x-2">
+                <input type="text" id="nql-query-string" placeholder="Enter NQL query..." required class="flex-grow block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-gray-100">
+                <button type="submit" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800">Query Tensors</button>
+            </div>
+        </form>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-white mb-3">NQL Results:</h3>
+        <div id="nql-results-list" class="min-h-[50px] rounded-md border border-dashed border-gray-300 dark:border-gray-600 divide-y divide-gray-200 dark:divide-gray-700">
+             <p class="text-gray-500 dark:text-gray-400 p-4">Enter a query to see results.</p> {# Placeholder text #}
+        </div>
+    </section>
 </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+{# The main.js from base.html handles general things like mobile menu. #}
+{# core_features.js is specific to this page for its interactive demos. #}
 <script src="{{ url_for('static', filename='js/core_features.js') }}"></script>
 {% endblock %}

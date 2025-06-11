@@ -2,77 +2,59 @@
 {% block title %}Tensorus Dataset Showcase{% endblock %}
 
 {% block head_extra %}
-<style>
-    .card.h-100 {
-        display: flex;
-        flex-direction: column;
-    }
-    .card-body {
-        flex-grow: 1;
-    }
-    .card-text.small {
-        font-size: 0.875rem; /* Slightly smaller text for descriptions */
-    }
-    .badge.bg-info { /* Ensure good contrast for badges if using default Bootstrap text color */
-        color: #000 !important; /* Or use .text-dark with Bootstrap 5.1+ */
-    }
-    .properties-list {
-        padding-left: 0;
-        list-style: none;
-    }
-    .properties-list li {
-        font-size: 0.85rem;
-    }
-    .icon-prepend {
-        margin-right: 0.5em;
-    }
-</style>
+{#
+  Removed inline styles. Tailwind utility classes will be used.
+  The datasets.js script will need to be updated to generate HTML
+  elements with Tailwind CSS classes for the dataset cards.
+  Example structure for a dynamically loaded card:
+  <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden flex flex-col h-full">
+    <div class="p-6 flex flex-col flex-grow">
+      <h5 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Dataset Name</h5>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-1">Source: <span class="font-medium">Source Type</span></p>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">Dataset description...</p>
+      <ul class="space-y-1 text-sm mb-4">
+        <li><span class="font-semibold mr-1">Property 1:</span> Value 1</li>
+        <li><span class="font-semibold mr-1">Property 2:</span> Value 2</li>
+      </ul>
+      <div class="mt-auto"> <!-- Ensures footer/buttons are at the bottom -->
+         <span class="text-xs inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-sky-100 text-sky-700 dark:bg-sky-700 dark:text-sky-100 rounded">Tag 1</span>
+      </div>
+    </div>
+    <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <a href="#" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 rounded-sm">Explore Dataset</a>
+    </div>
+  </div>
+#}
+{# Removed non-functional JavaScript helper 'styleDatasetCard'.
+   Actual styling of dynamic cards must be handled in datasets.js by adding appropriate Tailwind classes. #}
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="pb-2 mb-4 border-bottom">
-        <h1>Tensorus Dataset Showcase</h1>
-        <p class="lead">Explore a selection of datasets that can be managed and utilized within the Tensorus ecosystem. This is a conceptual demonstration.</p>
+{# Container and top margin are handled by base.html's main tag #}
+<div class="pb-4 mb-6 border-b border-gray-200 dark:border-gray-700">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-2">Tensorus Dataset Showcase</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300">Explore a selection of datasets that can be managed and utilized within the Tensorus ecosystem. This is a conceptual demonstration.</p>
+</div>
+
+<div id="dataset-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {# Placeholder for loading state - datasets.js should replace this or clear it #}
+    <div class="col-span-1 md:col-span-2 text-center p-8 loading-text-container" id="loading-placeholder-container">
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 animate-pulse w-full max-w-md mx-auto">
+            <div class="h-5 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+            <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-full mb-2"></div>
+            <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-5/6 mb-2"></div>
+            <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-4/6"></div>
+        </div>
+        <p class="mt-4 text-gray-500 dark:text-gray-400 loading-text">Loading datasets...</p>
     </div>
 
-    <div id="dataset-list-container" class="row row-cols-1 row-cols-md-2 g-4">
-        <!-- Placeholder cards (optional, good for perceived performance) -->
-        <div class="col placeholder-dataset-card">
-            <div class="card h-100" aria-hidden="true">
-                <div class="card-body">
-                  <h5 class="card-title placeholder-glow">
-                    <span class="placeholder col-7"></span>
-                  </h5>
-                  <p class="card-text placeholder-glow">
-                    <span class="placeholder col-8"></span>
-                    <span class="placeholder col-5"></span>
-                    <span class="placeholder col-6"></span>
-                  </p>
-                </div>
-            </div>
+    <noscript class="col-span-1 md:col-span-2">
+        <div class="p-4 bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-500">
+            <p class="text-yellow-700 dark:text-yellow-200">This page requires JavaScript to display datasets dynamically.</p>
         </div>
-         <div class="col placeholder-dataset-card d-none d-md-block">
-            <div class="card h-100" aria-hidden="true">
-                <div class="card-body">
-                  <h5 class="card-title placeholder-glow">
-                    <span class="placeholder col-7"></span>
-                  </h5>
-                  <p class="card-text placeholder-glow">
-                    <span class="placeholder col-8"></span>
-                    <span class="placeholder col-5"></span>
-                    <span class="placeholder col-6"></span>
-                  </p>
-                </div>
-            </div>
-        </div>
-        <!-- Actual dataset cards will be loaded here by JavaScript -->
-        <!-- Initial text if no JS or while loading -->
-        <noscript>
-            <p>This page requires JavaScript to display datasets dynamically.</p>
-        </noscript>
-        <p class="loading-text w-100 text-center">Loading datasets...</p>
-    </div>
+    </noscript>
+    <!-- Dataset cards will be loaded here by JavaScript (datasets.js) -->
+    <!-- The JavaScript should generate cards with Tailwind classes, see example in head_extra -->
 </div>
 {% endblock %}
 

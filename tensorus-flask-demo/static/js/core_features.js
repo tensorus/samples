@@ -65,30 +65,32 @@ document.addEventListener('DOMContentLoaded', function () {
             if (tensorListDiv) {
                 tensorListDiv.innerHTML = '';
                 if (tensors.length === 0) {
-                    tensorListDiv.innerHTML = '<p>No tensors stored yet.</p>';
+                tensorListDiv.innerHTML = '<p class="text-gray-500 dark:text-gray-400">No tensors stored yet.</p>';
                 } else {
-                    const ul = document.createElement('ul');
-                    ul.className = 'list-group';
+                    const divListContainer = document.createElement('div'); // Using a div container for card-like items
+                    divListContainer.className = 'space-y-4';
                     tensors.forEach(tensor => {
-                        const li = document.createElement('li');
-                        li.className = 'list-group-item';
-                        let schemaText = tensor.schema_name ? ` <span class="badge bg-secondary">${escapeHtml(tensor.schema_name)}</span>` : '';
-                        li.innerHTML = `
-                            <h5>${escapeHtml(tensor.name)} (ID: ${tensor.id})${schemaText}</h5>
-                            <small>Shape: ${escapeHtml(tensor.shape)}, DType: ${escapeHtml(tensor.dtype)}</small>
-                            <p>Data: <code>${escapeHtml(tensor.data)}</code></p>
-                            <p><small>Metadata: <code>${escapeHtml(JSON.stringify(tensor.metadata))}</code></small></p>
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'p-4 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 shadow-sm';
+                        let schemaText = tensor.schema_name ? ` <span class="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-200">${escapeHtml(tensor.schema_name)}</span>` : '';
+                        itemDiv.innerHTML = `
+                            <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">${escapeHtml(tensor.name)} (ID: ${tensor.id})${schemaText}</h5>
+                            <small class="text-sm text-gray-600 dark:text-gray-400 block mb-1">Shape: ${escapeHtml(tensor.shape)}, DType: ${escapeHtml(tensor.dtype)}</small>
+                            <p class="text-sm text-gray-700 dark:text-gray-300 mb-1">Data: <code class="text-xs text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">${escapeHtml(tensor.data)}</code></p>
+                            <p class="text-sm text-gray-700 dark:text-gray-300"><small>Metadata: <code class="text-xs text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">${escapeHtml(JSON.stringify(tensor.metadata))}</code></small></p>
                         `;
-                        ul.appendChild(li);
+                        // Call conceptual helper from core_features.html's head_extra (if it were real and in scope)
+                        // For now, direct styling is applied. If styleTensorListItem was global, it could be called.
+                        divListContainer.appendChild(itemDiv);
                     });
-                    tensorListDiv.appendChild(ul);
+                    tensorListDiv.appendChild(divListContainer);
                 }
             }
             populateTensorSelects(tensors);
 
         } catch (error) {
             if (tensorListDiv) {
-                tensorListDiv.innerHTML = `<p class="text-danger">Error fetching tensors: ${error.message}</p>`;
+                tensorListDiv.innerHTML = `<p class="text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 p-3 rounded-md">Error fetching tensors: ${error.message}</p>`;
             }
             console.error('Error fetching tensors:', error);
             populateTensorSelects([]);
@@ -205,18 +207,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!response.ok) {
                     throw new Error(result.error || `HTTP error ${response.status}`);
                 }
+                // Apply Tailwind styling for the result card
+                tensorOpResultDiv.className = 'p-4 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 shadow-md min-h-[60px]';
                 tensorOpResultDiv.innerHTML = `
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${escapeHtml(result.name)}</h5>
-                            <p class="card-text">Shape: ${escapeHtml(result.shape)}</p>
-                            <p class="card-text">DType: ${escapeHtml(result.dtype)}</p>
-                            <p class="card-text">Data: <code>${escapeHtml(result.data)}</code></p>
-                            <p class="card-text"><small>Metadata: <code>${escapeHtml(JSON.stringify(result.metadata))}</code></small></p>
-                        </div>
-                    </div>`;
+                    <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">${escapeHtml(result.name)}</h5>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Shape: ${escapeHtml(result.shape)}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">DType: ${escapeHtml(result.dtype)}</p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300">Data: <code class="text-xs text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">${escapeHtml(result.data)}</code></p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300"><small>Metadata: <code class="text-xs text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">${escapeHtml(JSON.stringify(result.metadata))}</code></small></p>
+                `;
+                // Call conceptual helper from core_features.html's head_extra (if it were real and in scope)
+                // styleTensorOpResult(tensorOpResultDiv); // If this function was made global and available
             } catch (error) {
-                tensorOpResultDiv.innerHTML = `<p class="text-danger">Operation failed: ${error.message}</p>`;
+                tensorOpResultDiv.className = 'p-4 border border-red-300 dark:border-red-600 rounded-md bg-red-50 dark:bg-red-900/30 shadow min-h-[60px]';
+                tensorOpResultDiv.innerHTML = `<p class="text-red-700 dark:text-red-300">Operation failed: ${error.message}</p>`;
                 console.error('Tensor operation error:', error);
             }
         });
@@ -243,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 displayNqlResults(responseData);
             } catch (error) {
-                nqlResultsDiv.innerHTML = `<p class="text-danger">Error processing NQL query: ${error.message}</p>`;
+                nqlResultsDiv.innerHTML = `<p class="text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 p-3 rounded-md">Error processing NQL query: ${error.message}</p>`;
                 console.error('Error processing NQL query:', error);
             }
         });
@@ -251,26 +255,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayNqlResults(tensors) {
         if (!nqlResultsDiv) return;
-        nqlResultsDiv.innerHTML = '';
+        nqlResultsDiv.innerHTML = ''; // Clear previous results
         if (!tensors || tensors.length === 0) {
-            nqlResultsDiv.innerHTML = '<p>No tensors found matching your query.</p>';
+            nqlResultsDiv.innerHTML = '<p class="text-gray-500 dark:text-gray-400 p-4">No tensors found matching your query.</p>';
             return;
         }
-        const ul = document.createElement('ul');
-        ul.className = 'list-group';
+        const divListContainer = document.createElement('div');
+        // The parent #nql-results-list already has: divide-y divide-gray-200 dark:divide-gray-700
+        // So items just need padding etc.
         tensors.forEach(tensor => {
-            const li = document.createElement('li');
-            li.className = 'list-group-item';
-            let schemaText = tensor.schema_name ? ` <span class="badge bg-secondary">${escapeHtml(tensor.schema_name)}</span>` : '';
-            li.innerHTML = `
-                <h5>${escapeHtml(tensor.name)} (ID: ${tensor.id})${schemaText}</h5>
-                <small>Shape: ${escapeHtml(tensor.shape)}, DType: ${escapeHtml(tensor.dtype)}</small>
-                <p>Data: <code>${escapeHtml(tensor.data)}</code></p>
-                <p><small>Metadata: <code>${escapeHtml(JSON.stringify(tensor.metadata))}</code></small></p>
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50'; // Individual item styling
+            let schemaText = tensor.schema_name ? ` <span class="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-200">${escapeHtml(tensor.schema_name)}</span>` : '';
+            itemDiv.innerHTML = `
+                <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">${escapeHtml(tensor.name)} (ID: ${tensor.id})${schemaText}</h5>
+                <small class="text-sm text-gray-600 dark:text-gray-400 block mb-1">Shape: ${escapeHtml(tensor.shape)}, DType: ${escapeHtml(tensor.dtype)}</small>
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-1">Data: <code class="text-xs text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">${escapeHtml(tensor.data)}</code></p>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><small>Metadata: <code class="text-xs text-pink-600 dark:text-pink-400 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm">${escapeHtml(JSON.stringify(tensor.metadata))}</code></small></p>
             `;
-            ul.appendChild(li);
+            // Call conceptual helper from core_features.html's head_extra (if it were real and in scope)
+            // styleNqlResultItem(itemDiv); // If this function was made global and available
+            divListContainer.appendChild(itemDiv);
         });
-        nqlResultsDiv.appendChild(ul);
+        nqlResultsDiv.appendChild(divListContainer);
     }
 
     // Initial data fetch and population of UI elements

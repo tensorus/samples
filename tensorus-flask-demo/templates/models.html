@@ -2,96 +2,55 @@
 {% block title %}Tensorus Model Showcase{% endblock %}
 
 {% block head_extra %}
-<style>
-    .card.h-100 {
-        display: flex;
-        flex-direction: column;
-    }
-    .card-body {
-        flex-grow: 1; /* Allows card body to take up available space */
-        display: flex;
-        flex-direction: column;
-    }
-    .card-text {
-        font-size: 0.9rem;
-    }
-    .card-footer {
-        flex-shrink: 0; /* Prevents footer from shrinking */
-    }
-    .mock-result-display {
-        font-size: 0.85rem;
-        word-break: break-all;
-    }
-</style>
+{#
+  Removed inline styles. Tailwind utility classes will be used.
+  The models.js script will need to be updated to generate HTML
+  elements with Tailwind CSS classes for the model cards.
+  Example structure for a dynamically loaded card:
+  <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden flex flex-col h-full">
+    <div class="p-6 flex flex-col flex-grow">
+      <h5 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Model Name</h5>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-1">Type: <span class="font-medium">Model Type</span></p>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">Model description...</p>
+      <div class="mt-auto"> <!-- Ensures footer/buttons are at the bottom -->
+         <span class="text-xs inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-blue-100 text-blue-700 dark:bg-blue-700 dark:text-blue-100 rounded">Tag 1</span>
+         <span class="text-xs inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100 rounded">Tag 2</span>
+      </div>
+    </div>
+    <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <a href="#" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 rounded-sm">View Details</a>
+      <button class="ml-2 text-sm py-1 px-3 border border-gray-400 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Run Inference</button>
+    </div>
+    <!-- For mock results if any -->
+    <!-- <div class="p-3 border-t border-gray-200 dark:border-gray-700 mock-result-display text-xs bg-gray-50 dark:bg-gray-700/50 font-mono break-all"></div> -->
+  </div>
+#}
+{# Removed non-functional JavaScript helper 'styleModelCard'.
+   Actual styling of dynamic cards must be handled in models.js by adding appropriate Tailwind classes. #}
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="pb-2 mb-4 border-bottom">
-        <h1>Tensorus Model Showcase</h1>
-        <p class="lead">Explore a selection of models available within the Tensorus ecosystem. This is a conceptual demonstration of how various models could be cataloged and interacted with.</p>
-    </div>
+{# Container and top margin are handled by base.html's main tag #}
+<div class="pb-4 mb-6 border-b border-gray-200 dark:border-gray-700">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-2">Tensorus Model Showcase</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300">Explore a selection of models available within the Tensorus ecosystem. This is a conceptual demonstration of how various models could be cataloged and interacted with.</p>
+</div>
 
-    <div id="model-list-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <!-- Model cards will be loaded here by JavaScript -->
-        <div class="col">
-            <div class="card h-100" aria-hidden="true">
-                <div class="card-body">
-                  <h5 class="card-title placeholder-glow">
-                    <span class="placeholder col-6"></span>
-                  </h5>
-                  <p class="card-text placeholder-glow">
-                    <span class="placeholder col-7"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-6"></span>
-                    <span class="placeholder col-8"></span>
-                  </p>
-                </div>
-                <div class="card-footer bg-transparent border-top-0">
-                    <a href="#" tabindex="-1" class="btn btn-sm btn-outline-secondary disabled placeholder col-6"></a>
-                </div>
-              </div>
+<div id="model-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {# Placeholder card to show loading state - models.js should replace this content #}
+    {# This single placeholder helps verify Tailwind styles for cards. #}
+    <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center p-8" id="loading-placeholder-container">
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 animate-pulse w-full max-w-sm mx-auto">
+            <div class="h-6 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+            <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-full mb-2"></div>
+            <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-5/6 mb-2"></div>
+            <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-4/6 mb-4"></div>
+            <div class="h-8 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
         </div>
-        <div class="col d-none d-md-block">
-            <div class="card h-100" aria-hidden="true">
-                <div class="card-body">
-                  <h5 class="card-title placeholder-glow">
-                    <span class="placeholder col-6"></span>
-                  </h5>
-                  <p class="card-text placeholder-glow">
-                    <span class="placeholder col-7"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-6"></span>
-                    <span class="placeholder col-8"></span>
-                  </p>
-                </div>
-                <div class="card-footer bg-transparent border-top-0">
-                    <a href="#" tabindex="-1" class="btn btn-sm btn-outline-secondary disabled placeholder col-6"></a>
-                </div>
-              </div>
-        </div>
-        <div class="col d-none d-lg-block">
-            <div class="card h-100" aria-hidden="true">
-                <div class="card-body">
-                  <h5 class="card-title placeholder-glow">
-                    <span class="placeholder col-6"></span>
-                  </h5>
-                  <p class="card-text placeholder-glow">
-                    <span class="placeholder col-7"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-6"></span>
-                    <span class="placeholder col-8"></span>
-                  </p>
-                </div>
-                <div class="card-footer bg-transparent border-top-0">
-                    <a href="#" tabindex="-1" class="btn btn-sm btn-outline-secondary disabled placeholder col-6"></a>
-                </div>
-              </div>
-        </div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading models...</p>
     </div>
+    <!-- Model cards will be loaded here by JavaScript (models.js) -->
+    <!-- The JavaScript should generate cards with Tailwind classes, see example in head_extra -->
 </div>
 {% endblock %}
 

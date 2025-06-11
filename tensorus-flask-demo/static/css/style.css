@@ -1,0 +1,148 @@
+/* General Body and Typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #343a40; /* Darker text for readability */
+    padding-top: 70px; /* Adjust if navbar height changes - 56px is often default, but might need more with padding */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600; /* Slightly bolder headings */
+    color: #212529;
+}
+
+.lead {
+    font-size: 1.15rem;
+    font-weight: 300;
+}
+
+/* Navbar Styling */
+.navbar {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    background-color: #ffffff !important; /* White navbar */
+    padding-top: 0.75rem; /* Add some padding to navbar */
+    padding-bottom: 0.75rem;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #0d6efd !important; /* Bootstrap primary blue */
+}
+
+.nav-link {
+    color: #495057 !important; /* Subtler link color */
+    font-weight: 500; /* Slightly bolder nav links */
+}
+.nav-link:hover,
+.nav-link.active { /* Assuming .active class is set by Flask/JS for current page */
+    color: #0d6efd !important; /* Primary blue on hover/active */
+}
+/* Custom active state if not using Bootstrap's default .active on nav-item */
+.navbar-nav .nav-item a.active-nav-link {
+    color: #0d6efd !important;
+    font-weight: bold;
+}
+
+
+/* Button Styling */
+.btn {
+    border-radius: 0.3rem; /* Slightly more rounded buttons */
+    font-weight: 500;
+}
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+.btn-outline-secondary {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Card Styling */
+.card {
+    border: none; /* Remove default border, rely on shadow */
+    border-radius: 0.5rem; /* More rounded cards */
+    box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,.05); /* Softer default shadow */
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+.card:hover {
+    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1)!important; /* Enhanced shadow on hover */
+    transform: translateY(-3px);
+}
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef; /* Lighter border */
+    font-weight: 500;
+}
+.card-title {
+    color: #0d6efd;
+}
+.card-subtitle {
+    font-size: 0.9rem;
+}
+.badge {
+    font-weight: 500;
+}
+
+/* Footer Styling */
+.footer { /* Ensure .footer class is used on the footer element in base.html */
+    padding: 2rem 0;
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 3rem !important; /* Ensure space above footer */
+}
+
+/* Agent Dashboard Specifics */
+#agent-dashboard-container .card-body h6 {
+    margin-top: 0.75rem;
+    font-weight: 500;
+    color: #333;
+}
+#agent-dashboard-container .list-group-item { /* Assuming this was for config list */
+    background-color: transparent; /* Let card body bg show */
+    border:none;
+    padding-left:0;
+    padding-right:0;
+}
+#agent-dashboard-container .config-list li {
+     padding: 0.1rem 0; /* Specific to config list if it exists */
+}
+
+#agent-dashboard-container .logs-container code { /* Style for individual log lines if wrapped in code */
+    display: block; /* Make each log entry a block */
+    background-color: #e9ecef;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    color: #555;
+    margin-bottom: 2px; /* Space between log lines */
+    font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.75rem;
+}
+
+
+/* Core Features - Tensor Operations form alignment */
+#tensor-op-form .align-items-end { /* Ensure this class exists on the row */
+    align-items: flex-end!important;
+}
+
+/* General container adjustments for consistent padding */
+.container.mt-4 { /* if used on other pages */
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+.container.py-5 { /* For homepage */
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+}
+
+/* Bootstrap Icons - ensure they are vertically aligned if used with text */
+.bi {
+    vertical-align: -0.125em; /* Default Bootstrap icon alignment */
+    margin-right: 0.25em; /* Consistent spacing if used before text */
+}

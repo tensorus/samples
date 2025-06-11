@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Tensorus Model Showcase{% endblock %}
+
+{% block head_extra %}
+<style>
+    .card.h-100 {
+        display: flex;
+        flex-direction: column;
+    }
+    .card-body {
+        flex-grow: 1; /* Allows card body to take up available space */
+        display: flex;
+        flex-direction: column;
+    }
+    .card-text {
+        font-size: 0.9rem;
+    }
+    .card-footer {
+        flex-shrink: 0; /* Prevents footer from shrinking */
+    }
+    .mock-result-display {
+        font-size: 0.85rem;
+        word-break: break-all;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="pb-2 mb-4 border-bottom">
+        <h1>Tensorus Model Showcase</h1>
+        <p class="lead">Explore a selection of models available within the Tensorus ecosystem. This is a conceptual demonstration of how various models could be cataloged and interacted with.</p>
+    </div>
+
+    <div id="model-list-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Model cards will be loaded here by JavaScript -->
+        <div class="col">
+            <div class="card h-100" aria-hidden="true">
+                <div class="card-body">
+                  <h5 class="card-title placeholder-glow">
+                    <span class="placeholder col-6"></span>
+                  </h5>
+                  <p class="card-text placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-6"></span>
+                    <span class="placeholder col-8"></span>
+                  </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" tabindex="-1" class="btn btn-sm btn-outline-secondary disabled placeholder col-6"></a>
+                </div>
+              </div>
+        </div>
+        <div class="col d-none d-md-block">
+            <div class="card h-100" aria-hidden="true">
+                <div class="card-body">
+                  <h5 class="card-title placeholder-glow">
+                    <span class="placeholder col-6"></span>
+                  </h5>
+                  <p class="card-text placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-6"></span>
+                    <span class="placeholder col-8"></span>
+                  </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" tabindex="-1" class="btn btn-sm btn-outline-secondary disabled placeholder col-6"></a>
+                </div>
+              </div>
+        </div>
+        <div class="col d-none d-lg-block">
+            <div class="card h-100" aria-hidden="true">
+                <div class="card-body">
+                  <h5 class="card-title placeholder-glow">
+                    <span class="placeholder col-6"></span>
+                  </h5>
+                  <p class="card-text placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-6"></span>
+                    <span class="placeholder col-8"></span>
+                  </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="#" tabindex="-1" class="btn btn-sm btn-outline-secondary disabled placeholder col-6"></a>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/models.js') }}"></script>
+{% endblock %}

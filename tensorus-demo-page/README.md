@@ -6,10 +6,12 @@ This is the frontend application for showcasing conceptual demos of **Tensorus**
 
 *   **Demo Gallery:** A home page displaying all available Tensorus demos in a card-based layout.
 *   **Detailed Demo Pages:** Individual pages for each demo, providing:
+    *   Clear instructions on how to run the specific Streamlit demo locally.
+    *   An embedded `iframe` to display the locally running Streamlit application.
     *   A comprehensive description.
     *   Key features and concepts highlighted.
-    *   Placeholder for visuals (screenshots/videos).
-    *   Links to the demo's source code or specific README for execution instructions.
+    *   Links to the demo's source code or specific README for full setup details.
+*   **Embedded Local Demos:** Interactive Streamlit demos are embedded directly. Users need to run the Streamlit applications locally for them to appear in the gallery.
 *   **Clean, Responsive Design:** Styled for a clean, modern aesthetic with basic responsiveness for different screen sizes.
 *   **Scalable:** Designed to easily accommodate new demos in the future.
 

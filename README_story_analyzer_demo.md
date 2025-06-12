@@ -96,7 +96,8 @@ This simulation demonstrates how structured, multi-faceted tensor data, managed 
     * Python 3.8+
     * Install required libraries:
         ```bash
-        pip install streamlit torch pandas numpy transformers nltk scikit-learn
+        # Navigate to the root directory of the 'tensorus' project first
+        pip install -r requirements.txt
         ```
     * Download NLTK's 'punkt' tokenizer (if not already present, though `sentence-transformers` often handles its own dependencies):
         ```bash

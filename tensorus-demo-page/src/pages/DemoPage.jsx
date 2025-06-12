@@ -32,14 +32,24 @@ const DemoPage = () => {
           <h3>Running the Demo Locally</h3>
           <p>This demo is an interactive Streamlit application that runs on your local machine. To view and interact with it below, please follow these steps:</p>
           <ol>
-            <li>Open your terminal or command prompt.</li>
-            <li>Navigate to the root directory of the 'tensorus' project (the one containing the demo's Python file).</li>
             <li>
-              Run the following command:
+              Navigate to the root directory of the 'tensorus' project in your terminal
+              (this is the directory containing the `requirements.txt` file and the demo Python scripts).
+            </li>
+            <li>
+              (If you haven't done so already for this project) Install the required Python packages by running:
+              <pre><code>pip install -r requirements.txt</code></pre>
+            </li>
+            <li>
+              Download NLTK's 'punkt' tokenizer if needed (usually only once per Python environment):
+              <pre><code>python -m nltk.downloader punkt</code></pre>
+            </li>
+            <li>
+              Now, run the specific command for this demo:
               <pre><code>{demo.streamlitCommand}</code></pre>
             </li>
-            <li>Once the Streamlit app is running (usually it will also open in a new browser tab), it should appear in the embedded frame below.</li>
-            <li>If the port {demo.localPort || 8501} is already in use by another application, Streamlit might choose the next available port (e.g., 8502). The embed below targets port {demo.localPort || 8501}. For now, please ensure this demo runs on the target port or stop other Streamlit apps.</li>
+            <li>Once the Streamlit app is running (it usually opens in a new browser tab as well), it should appear in the embedded frame below.</li>
+            <li>If port {demo.localPort || 8501} is in use, Streamlit may pick the next available one. The embed below targets port {demo.localPort || 8501}. For now, please ensure this demo runs on the target port or stop other Streamlit apps.</li>
           </ol>
         </section>
 

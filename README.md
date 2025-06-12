@@ -53,7 +53,14 @@ Here's an overview of the sample applications you can explore:
 *   **Streamlit Applications:** Each demo in this repository is a self-contained Streamlit application. Streamlit provides an easy way to create interactive web apps for machine learning and data science projects.
 *   **Prerequisites:**
     *   Generally, you will need **Python 3.8+** and `pip` (the Python package installer) installed on your system.
-    *   Each demo has its own specific Python library requirements (e.g., `streamlit`, `torch`, `pandas`, `transformers`, `nltk`). These are listed in the individual README files for each demo.
+    *   **Install Dependencies:** Install all required Python packages by running the following command from the root directory of this project:
+        ```bash
+        pip install -r requirements.txt
+        ```
+    *   **NLTK Tokenizer:** Some demos may also require NLTK's 'punkt' tokenizer. If you encounter issues, download it by running:
+        ```bash
+        python -m nltk.downloader punkt
+        ```
 *   **Simulation Aspect:** As mentioned, these demos use an embedded, in-memory simulation of Tensorus's storage and data handling capabilities (via a Python class within each script). They are designed for conceptual illustration and do not require a separate, external Tensorus database installation. This makes them easy to download and run directly.
 *   **Data Ingestion:** Most demos will include a step (usually a button in the Streamlit UI) to "Load and Ingest Sample Data." This process involves generating tensor representations from raw sample data (like text or structured information) and populating the in-memory simulated TensorStorage. This step might take a few moments, especially on the first run, as NLP models might need to be downloaded and initialized.
 

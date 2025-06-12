@@ -95,7 +95,8 @@ The clear implication is that an AI model fed the more comprehensive and structu
     * Python 3.8+
     * Install required libraries:
         ```bash
-        pip install streamlit torch pandas numpy transformers nltk scikit-learn
+        # Navigate to the root directory of the 'tensorus' project first
+        pip install -r requirements.txt
         ```
     * Download NLTK's 'punkt' tokenizer (needed by some `transformers` tokenizers, though `sentence-transformers` often bundles its needs. Good to have if not explicitly managed by the chosen model):
         ```bash

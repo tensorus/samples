@@ -1,0 +1,99 @@
+.app-header {
+  background-color: #ffffff; /* White background for header */
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  border-bottom: 1px solid #e0e0e0; /* Light border */
+}
+
+.app-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px; /* Max width for nav content */
+  margin: 0 auto; /* Center nav content */
+}
+
+.nav-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1d1d1f; /* Apple dark grey */
+}
+
+.nav-logo:hover {
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  font-size: 1rem;
+  color: #007aff; /* Apple blue */
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.2s ease; /* Added color transition */
+}
+
+.nav-link:hover {
+  color: #0056b3; /* Darker blue on hover */
+  text-decoration: none;
+}
+
+.nav-link::after { /* Underline effect for active/hover */
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #007aff;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after { /* Style for active link, assuming we add activeClassName or similar */
+  width: 100%;
+}
+
+.main-content {
+  padding: 2rem; /* Ensure padding for content area */
+  max-width: 1200px;
+  margin: 0 auto; /* Center content */
+  text-align: left; /* Reset text-align for content */
+}
+
+.app-footer {
+  text-align: center;
+  padding: 1.5rem 2rem;
+  background-color: #f8f8f8; /* Lighter grey for footer */
+  color: #555;
+  font-size: 0.9rem;
+  border-top: 1px solid #e0e0e0; /* Light border */
+}
+
+/* Basic responsive nav for smaller screens */
+@media (max-width: 768px) {
+  .app-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .nav-link {
+    padding: 0.5rem 0; /* Adjust padding for stacked links */
+    width: 100%; /* Make links take full width */
+    border-bottom: 1px solid #f0f0f0; /* Separator for stacked links */
+  }
+  .nav-link:last-child {
+    border-bottom: none;
+  }
+  .nav-link::after { /* Adjust underline for stacked view if needed, or remove */
+    display: none; /* Simpler without underline in stacked mobile view */
+  }
+}

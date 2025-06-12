@@ -1,0 +1,140 @@
+.demo-page-container { /* New container for centering and max-width */
+  max-width: 900px; /* Max width for the demo detail content */
+  margin: 0 auto;
+  padding: 1rem; /* Padding around the content */
+}
+
+.demo-page {
+  padding: 0; /* Layout component handles main padding */
+}
+
+.not-found-page { /* Styles for the 'Demo Not Found' message */
+    text-align: center;
+    padding: 3rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.demo-page-header {
+  background-color: #f9f9f9; /* Slightly off-white for the header block */
+  padding: 2.5rem 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+}
+
+.demo-page-header h1 {
+  font-size: 2.2rem; /* Adjusted for balance */
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.demo-section { /* Common styling for sections within DemoPage */
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.demo-section h3 {
+  font-size: 1.4rem; /* Adjusted */
+  color: #1d1d1f; /* Darker heading color */
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e5e5; /* Softer border */
+  padding-bottom: 0.75rem;
+}
+
+.demo-visuals img {
+   max-width: 100%;
+   border-radius: 6px;
+   margin-top: 0.5rem; /* Reduced margin */
+   border: 1px solid #e5e5e5; /* Subtle border for images */
+}
+
+.demo-features ul {
+  list-style: none; /* Remove default bullets */
+  padding-left: 0;
+}
+
+.demo-features li {
+  font-size: 0.95rem; /* Adjusted */
+  margin-bottom: 0.75rem; /* Increased spacing */
+  color: #333; /* Slightly darker text */
+  padding-left: 1.5rem; /* Space for custom bullet */
+  position: relative;
+}
+
+.demo-features li::before { /* Custom bullet point (Apple-like dash) */
+  content: '–'; /* en-dash */
+  position: absolute;
+  left: 0;
+  color: #007aff; /* Apple blue */
+  font-weight: bold;
+}
+
+.demo-tags-section .demo-tags { /* Styles for tags section on DemoPage */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem; /* Slightly larger gap */
+    padding-top: 0.5rem;
+}
+
+.demo-tags-section .demo-tag {
+    background-color: #007aff; /* Blue background for tags on detail page */
+    color: white; /* White text */
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px; /* Pill-shaped tags */
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.demo-cta {
+  text-align: center;
+  /* padding: 2rem 0; Removed as demo-section now has padding */
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background-color: #007aff;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #007aff;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Ensure .demo-page-container provides adequate padding on smaller screens */
+@media (max-width: 768px) {
+  .demo-page-header h1 {
+    font-size: 1.8rem;
+  }
+  .demo-section h3 {
+    font-size: 1.3rem;
+  }
+  .demo-page-container {
+    padding: 0.5rem; /* Reduce padding on smaller screens */
+  }
+  .demo-section {
+    padding: 1rem; /* Reduce padding within sections */
+  }
+}

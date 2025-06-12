@@ -1,30 +1,39 @@
-# Tensorus Demo Page
+# Tensorus Demo Gallery Page
 
-This repository contains the frontend application for showcasing demos of **Tensorus**, an agentic tensor database. This page is built using React and Vite.
+This is the frontend application for showcasing conceptual demos of **Tensorus**, an agentic tensor database. This page is built as a multi-page React application using Vite, providing a gallery of available demos and detailed information for each.
 
-## Current Status
+## Features
 
-Currently, this application serves as a foundational template (boilerplate) based on `create-vite` with the React plugin. The immediate future scope is to develop this page into a showcase for the various Tensorus conceptual demos, such as the "Financial News Impact Demo" and the "Smart Story Analyzer Demo," which can be found in the parent directory of this project.
+*   **Demo Gallery:** A home page displaying all available Tensorus demos in a card-based layout.
+*   **Detailed Demo Pages:** Individual pages for each demo, providing:
+    *   A comprehensive description.
+    *   Key features and concepts highlighted.
+    *   Placeholder for visuals (screenshots/videos).
+    *   Links to the demo's source code or specific README for execution instructions.
+*   **Clean, Responsive Design:** Styled for a clean, modern aesthetic with basic responsiveness for different screen sizes.
+*   **Scalable:** Designed to easily accommodate new demos in the future.
 
 ## Getting Started / How to Run This Page
 
-To get this React application running locally, please follow these steps:
+To get this React application running locally:
 
 ### Prerequisites
 
-*   **Node.js:** Make sure you have Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
-*   **npm or yarn:** These package managers come with Node.js (npm) or can be installed separately (yarn).
+*   **Node.js:** Ensure you have Node.js installed (v16+ recommended). You can download it from [nodejs.org](https://nodejs.org/).
+*   **npm or yarn:** A compatible package manager (npm usually comes with Node.js).
 
 ### Setup and Running
 
-1.  **Clone the Repository:**
-    If you haven't already, clone the main Tensorus repository that contains this project.
+1.  **Clone the Main Repository:**
+    If you haven't already, clone the main Tensorus project repository.
     ```bash
-    git clone <repository_url> # Replace <repository_url> with the actual URL
-    cd <repository_name> # Replace <repository_name> with the cloned directory name
+    # Replace <repository_url> with the actual URL of the Tensorus main repository
+    git clone <repository_url>
+    cd <repository_name> # e.g., cd tensorus
     ```
 
 2.  **Navigate to the Demo Page Directory:**
+    From the root of the main Tensorus project:
     ```bash
     cd tensorus-demo-page
     ```
@@ -50,16 +59,64 @@ To get this React application running locally, please follow these steps:
     ```
 
 5.  **View in Browser:**
-    Open your web browser and navigate to the URL provided by Vite (usually `http://localhost:5173` or a similar port). You should see the default Vite + React application page.
+    Open your web browser and navigate to the URL provided by Vite (usually `http://localhost:5173/tensorus-demo-page/` or similar, note the base path). You should see the Tensorus Demo Gallery page.
 
-## Future Scope
+## Adding a New Demo to the Gallery
 
-*   Integrate clear navigation to access or embed the Streamlit-based Tensorus demos.
-*   Provide summaries and explanations for each demo.
-*   Develop a user-friendly interface to explore the concepts Tensorus aims to illustrate.
+To add a new demo to this gallery:
+
+1.  **Prepare Demo Information:** Gather the following details for your new demo:
+    *   `id`: A unique string identifier (e.g., `my-new-demo`).
+    *   `title`: The display title of the demo.
+    *   `shortDescription`: A brief (1-2 sentence) description for the gallery card.
+    *   `longDescription`: A more detailed description for the demo's individual page.
+    *   `thumbnailUrl`: URL for a thumbnail image (e.g., `https://placehold.co/600x360/FF9500/FFFFFF/png?text=New+Demo`).
+    *   `visualsPath`: URL for a larger visual for the demo's page (e.g., `https://placehold.co/800x450/FF9500/FFFFFF/png?text=New+Demo+Detail`).
+    *   `keyFeatures`: An array of strings listing key features or concepts.
+    *   `readmeLink`: A URL to the demo's specific README file or main source file for instructions on how to run it.
+    *   `tags`: An array of strings for relevant tags (e.g., `['New Feature', 'AI', 'Data']`).
+
+2.  **Update `src/demoData.js`:**
+    Open the `tensorus-demo-page/src/demoData.js` file.
+    Add a new JavaScript object containing your demo's information to the `demos` array. Follow the structure of the existing demo objects.
+
+    Example:
+    ```javascript
+    // In tensorus-demo-page/src/demoData.js
+    export const demos = [
+      // ... existing demos ...
+      {
+        id: 'my-new-demo',
+        title: 'My Awesome New Demo',
+        shortDescription: 'This demo showcases an amazing new capability.',
+        longDescription: 'A full explanation of how this new demo works and what it demonstrates about Tensorus.',
+        thumbnailUrl: 'https://placehold.co/600x360/FF9500/FFFFFF/png?text=New+Demo',
+        visualsPath: 'https://placehold.co/800x450/FF9500/FFFFFF/png?text=New+Demo+Detail',
+        keyFeatures: [
+          'Feature A of new demo.',
+          'Concept B it highlights.',
+          'Uses advanced technique C.'
+        ],
+        readmeLink: 'https://github.com/your-repo/link-to-your-demo-readme.md',
+        tags: ['New', 'Awesome', 'AI']
+      }
+    ];
+    ```
+
+3.  **Verify:**
+    After saving `demoData.js`, the development server (if running) should automatically reload. Your new demo will appear in the gallery.
+
+## Project Structure Highlights
+
+*   `public/`: Static assets.
+*   `src/`: Source code.
+    *   `components/`: Reusable React components (e.g., `Layout.jsx`).
+    *   `pages/`: Components representing full pages (e.g., `HomePage.jsx`, `DemoPage.jsx`).
+    *   `demoData.js`: Centralized data for all demos.
+    *   `App.jsx`: Main application component with routing setup.
+    *   `main.jsx`: Entry point of the React application.
+*   `vite.config.js`: Vite configuration, including the `base` path for deployment.
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to the development of this demo page or the Tensorus project, please follow the standard open-source contribution guidelines (e.g., fork the repository, create a feature branch, submit a pull request). For major changes, please open an issue first to discuss what you would like to change.
-
-(Please adapt the repository URL and name in the clone instructions as needed if they are placeholders).
+Contributions to improve this demo gallery are welcome! Please follow standard open-source practices (fork, branch, pull request). For major changes or new features, consider opening an issue first to discuss.

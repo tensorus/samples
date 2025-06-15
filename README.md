@@ -43,6 +43,11 @@ Here's an overview of the sample applications you can explore:
     *   Storing and retrieving complex relational data (like character interactions and sentiments) in a way that AI agents can easily process for insights.
 *   **How to Run:** For detailed prerequisites, setup, and execution instructions, please see:
     *   ➡️ **[Details and Setup Instructions](README_story_analyzer_demo.md)**
+### 3. MCP Time Series Demo
+
+*   **Description:** Demonstrates the Tensorus MCP server and client with a simple time series dataset. The demo inserts a synthetic sine wave using MCP calls and retrieves it back.
+*   **How to Run:** See ➡️ **[README_mcp_time_series_demo.md](README_mcp_time_series_demo.md)**
+
 
 ---
 

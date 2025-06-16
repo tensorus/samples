@@ -9,7 +9,7 @@ The demo uses a minimal FastAPI backend with an in-memory tensor store. The MCP 
 * Python 3.8+
 * Install dependencies:
   ```bash
-  pip install -r requirements.txt fastmcp uvicorn numpy
+  pip install -r requirements.txt fastmcp uvicorn numpy tensorus
   ```
 
 ## Running the Demo
@@ -25,4 +25,4 @@ The demo uses a minimal FastAPI backend with an in-memory tensor store. The MCP 
    python mcp_time_series_demo.py
    ```
 
-The client creates a dataset, inserts a synthetic sine wave, lists available datasets, and fetches the stored tensor via the MCP server. This illustrates how Tensorus capabilities can be accessed through the standardized MCP interface.
+The client creates a dataset, inserts a synthetic sine wave, updates its metadata and finally cleans up the stored tensor and dataset. This illustrates how Tensorus capabilities can be accessed through the standardized MCP interface.

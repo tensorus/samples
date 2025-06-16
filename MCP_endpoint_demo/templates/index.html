@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Tensorus MCP Endpoint Demonstration</h1>
+    </header>
+
+    <main>
+        <section id="server-status">
+            <h2>MCP Server Status</h2>
+            <p class="explanation">This section displays the current status of the mock MCP server, including its version, operational status, and any models it reports as active. This information is fetched when the page loads using the <code>get_server_status</code> client method.</p>
+            {% if mcp_client_error %}
+                <p style="color: red;">Error connecting to MCP Client or Server.</p>
+            {% elif server_status %}
+                <p><strong>Version:</strong> {{ server_status.server_version }}</p>
+                <p><strong>Status:</strong> <span class="status-{{ server_status.status.lower() }}">{{ server_status.status }}</span></p>
+                <p><strong>Active Models:</strong> {{ server_status.active_models | join(', ') if server_status.active_models else 'None' }}</p>
+            {% else %}
+                <p>Could not retrieve server status.</p>
+            {% endif %}
+        </section>
+
+        <hr>
+
+        <section id="tensor-operations">
+            <h2>Tensor Operations</h2>
+            <p class="explanation">Interact with tensor objects stored or managed by the MCP server. Tensors are multi-dimensional arrays of numerical data, fundamental to machine learning.</p>
+
+            <div class="operation-group">
+                <h3>Get Tensor by ID</h3>
+                <p class="explanation-small">Retrieve a specific tensor by its unique ID. Try <code>existing_tensor</code> or an ID from a created tensor.</p>
+                <form id="get-tensor-form">
+                    <label for="get-tensor-id">Tensor ID:</label>
+                    <input type="text" id="get-tensor-id" name="tensor_id" value="existing_tensor" required>
+                    <button type="submit">Get Tensor</button>
+                </form>
+            </div>
+
+            <div class="operation-group">
+                <h3>List Tensors</h3>
+                <p class="explanation-small">Fetch a list of available tensors. The mock client returns a predefined list.</p>
+                <button id="list-tensors-btn">List All Tensors</button>
+            </div>
+
+            <div class="operation-group">
+                <h3>Create Tensor</h3>
+                <p class="explanation-small">Create a new tensor by providing its name, shape (e.g., <code>[1,10]</code>), data type (e.g., <code>float32</code>), and data (as a JSON array string like <code>[0.1, 0.2]</code>).</p>
+                <form id="create-tensor-form">
+                    <div>
+                        <label for="create-tensor-name">Name:</label>
+                        <input type="text" id="create-tensor-name" name="name" value="MyDemoTensor" required>
+                    </div>
+                    <div>
+                        <label for="create-tensor-shape">Shape (e.g., [1,10]):</label>
+                        <input type="text" id="create-tensor-shape" name="shape" value="[1,5]" required>
+                    </div>
+                    <div>
+                        <label for="create-tensor-dtype">Data Type (e.g., float32):</label>
+                        <input type="text" id="create-tensor-dtype" name="dtype" value="float32" required>
+                    </div>
+                    <div>
+                        <label for="create-tensor-data">Data (JSON array string, e.g., [1,2,3,4,5]):</label>
+                        <textarea id="create-tensor-data" name="data" rows="3" required>[0.1, 0.2, 0.3, 0.4, 0.5]</textarea>
+                    </div>
+                    <button type="submit">Create Tensor</button>
+                </form>
+            </div>
+
+            <div class="operation-group">
+                <h3>Update Tensor</h3>
+                <p class="explanation-small">Modify an existing tensor. Provide the Tensor ID and a JSON string containing the fields to update (e.g., <code>{"metadata": {"description": "New description"}}</code>).</p>
+                <form id="update-tensor-form">
+                    <div>
+                        <label for="update-tensor-id">Tensor ID to Update:</label>
+                        <input type="text" id="update-tensor-id" name="tensor_id" value="existing_tensor" required>
+                    </div>
+                    <div>
+                        <label for="update-tensor-data">Update Data (JSON string, e.g., {"metadata": {"source": "updated"}}):</label>
+                        <textarea id="update-tensor-data" name="update_data" rows="3" required>{"metadata": {"description": "Updated via demo"}}</textarea>
+                    </div>
+                    <button type="submit">Update Tensor</button>
+                </form>
+            </div>
+
+            <div class="operation-group">
+                <h3>Delete Tensor by ID</h3>
+                <p class="explanation-small">Remove a tensor from the server by its ID. Try deleting a tensor you created or <code>existing_tensor</code>.</p>
+                <form id="delete-tensor-form">
+                    <label for="delete-tensor-id">Tensor ID to Delete:</label>
+                    <input type="text" id="delete-tensor-id" name="tensor_id" value="new_tensor_mydemotensor" required>
+                    <button type="submit">Delete Tensor</button>
+                </form>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="model-operations">
+            <h2>Model Operations</h2>
+            <p class="explanation">Interact with machine learning models available through the MCP server.</p>
+            <div class="operation-group">
+                <h3>Get Model Info by ID</h3>
+                <p class="explanation-small">Retrieve details about a specific model, such as its version and expected input/output schemas. Try <code>sample_model</code>.</p>
+                <form id="get-model-form">
+                    <label for="get-model-id">Model ID:</label>
+                    <input type="text" id="get-model-id" name="model_id" value="sample_model" required>
+                    <button type="submit">Get Model Info</button>
+                </form>
+            </div>
+
+            <div class="operation-group">
+                <h3>List Models</h3>
+                <p class="explanation-small">Fetch a list of available models. The mock client returns a predefined list.</p>
+                <button id="list-models-btn">List All Models</button>
+            </div>
+
+            <div class="operation-group">
+                <h3>Model Predict</h3>
+                <p class="explanation-small">Get a prediction from a model. Provide the Model ID and input data as a JSON string (e.g., <code>{"features": [0.1, 0.2]}</code> for <code>sample_model</code>).</p>
+                <form id="model-predict-form">
+                    <div>
+                        <label for="predict-model-id">Model ID:</label>
+                        <input type="text" id="predict-model-id" name="model_id" value="sample_model" required>
+                    </div>
+                    <div>
+                        <label for="predict-input-data">Input Data (JSON string, e.g., {"features": [1,2]}):</label>
+                        <textarea id="predict-input-data" name="input_data" rows="3" required>{"features": [0.1, 0.2, 0.3]}</textarea>
+                    </div>
+                    <button type="submit">Predict</button>
+                </form>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="results-display">
+            <h2>MCP Client Response</h2>
+            <p class="explanation">The raw JSON response from the mock MCP client for the executed operation will be displayed here.</p>
+            <pre id="response-output">Awaiting interaction...</pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Tensorus Demo</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const responseOutput = document.getElementById('response-output');
+
+            function displayResponse(data) {
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+            }
+            function displayError(errMessage) {
+                responseOutput.textContent = JSON.stringify({ status: "error", message: errMessage }, null, 2);
+            }
+
+            // Get Tensor
+            document.getElementById('get-tensor-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const tensorId = document.getElementById('get-tensor-id').value;
+                responseOutput.textContent = 'Fetching tensor...';
+                fetch('/tensor/get', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ tensor_id: tensorId })
+                })
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+
+            // List Tensors
+            document.getElementById('list-tensors-btn').addEventListener('click', function() {
+                responseOutput.textContent = 'Listing tensors...';
+                fetch('/tensor/list')
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+
+            // Create Tensor
+            document.getElementById('create-tensor-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                responseOutput.textContent = 'Creating tensor...';
+                const formData = new FormData(event.target);
+                fetch('/tensor/create', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+
+            // Get Model Info
+            document.getElementById('get-model-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const modelId = document.getElementById('get-model-id').value;
+                responseOutput.textContent = 'Fetching model info...';
+                fetch('/model/get', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ model_id: modelId })
+                })
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+
+            // List Models
+            document.getElementById('list-models-btn').addEventListener('click', function() {
+                responseOutput.textContent = 'Listing models...';
+                fetch('/model/list')
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+
+            // Model Predict
+            document.getElementById('model-predict-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                responseOutput.textContent = 'Sending prediction request...';
+                const formData = new FormData(event.target);
+                fetch('/model/predict', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+
+            // Update Tensor
+            document.getElementById('update-tensor-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                responseOutput.textContent = 'Updating tensor...';
+                const formData = new FormData(event.target);
+                fetch('/tensor/update', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+
+            // Delete Tensor
+            document.getElementById('delete-tensor-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const tensorId = document.getElementById('delete-tensor-id').value;
+                responseOutput.textContent = 'Deleting tensor...';
+                fetch('/tensor/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ tensor_id: tensorId })
+                })
+                .then(response => response.json())
+                .then(displayResponse)
+                .catch(error => displayError('Network or parsing error: ' + error.message));
+            });
+        });
+    </script>
+</body>
+</html>

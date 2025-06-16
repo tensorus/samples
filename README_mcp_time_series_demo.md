@@ -9,8 +9,9 @@ The demo uses a minimal FastAPI backend with an in-memory tensor store. The MCP 
 * Python 3.8+
 * Install dependencies:
   ```bash
-  pip install -r requirements.txt fastmcp uvicorn numpy tensorus
+  pip install -r requirements.txt
   ```
+  This installs `fastmcp>=0.2.0`, `tensorus`, `uvicorn` and other required packages.
 
 ## Running the Demo
 
@@ -18,7 +19,11 @@ The demo uses a minimal FastAPI backend with an in-memory tensor store. The MCP 
    ```bash
    python mcp_time_series_server.py
    ```
-   Leave this running in a terminal.
+   Leave this running in a terminal. Alternatively, if `tensorus` is installed,
+   you can use its packaged server:
+   ```bash
+   python -m tensorus.mcp_server
+   ```
 
 2. **Run the client demo** in another terminal:
    ```bash

@@ -50,6 +50,23 @@ class EmbeddedTensorStorage:
     def list_datasets(self) -> List[str]:
         return list(self.datasets.keys())
 
+    def delete_dataset(self, name: str) -> None:
+        if name not in self.datasets:
+            raise KeyError("dataset not found")
+        del self.datasets[name]
+
+    def delete_tensor(self, name: str, record_id: str) -> None:
+        if name not in self.datasets or record_id not in self.datasets[name]:
+            raise KeyError("record not found")
+        del self.datasets[name][record_id]
+
+    def update_tensor_metadata(
+        self, name: str, record_id: str, new_metadata: Dict[str, Any]
+    ) -> None:
+        if name not in self.datasets or record_id not in self.datasets[name]:
+            raise KeyError("record not found")
+        self.datasets[name][record_id]["metadata"] = new_metadata
+
 
 storage = EmbeddedTensorStorage()
 app = FastAPI(title="Tensorus Demo API")
@@ -89,6 +106,33 @@ async def get_tensor(dataset_name: str, record_id: str):
         raise HTTPException(status_code=404, detail="not found")
 
 
+@app.delete("/datasets/{dataset_name}")
+async def delete_dataset(dataset_name: str):
+    try:
+        storage.delete_dataset(dataset_name)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="not found")
+    return {"status": "deleted"}
+
+
+@app.delete("/datasets/{dataset_name}/tensors/{record_id}")
+async def delete_tensor(dataset_name: str, record_id: str):
+    try:
+        storage.delete_tensor(dataset_name, record_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="not found")
+    return {"status": "deleted"}
+
+
+@app.put("/datasets/{dataset_name}/tensors/{record_id}/metadata")
+async def update_tensor_metadata(dataset_name: str, record_id: str, payload: Dict[str, Any]):
+    try:
+        storage.update_tensor_metadata(dataset_name, record_id, payload.get("new_metadata", {}))
+    except KeyError:
+        raise HTTPException(status_code=404, detail="not found")
+    return {"status": "updated"}
+
+
 # --- MCP Server (adapted from tensorus.mcp_server) ---
 API_BASE_URL = "http://127.0.0.1:8000"
 server = FastMCP(name="Tensorus FastMCP")
@@ -108,8 +152,22 @@ async def _get(path: str) -> dict:
         return response.json()
 
 
-@server.tool()
-async def save_tensor(
+async def _delete(path: str) -> dict:
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(f"{API_BASE_URL}{path}")
+        response.raise_for_status()
+        return response.json()
+
+
+async def _put(path: str, payload: dict) -> dict:
+    async with httpx.AsyncClient() as client:
+        response = await client.put(f"{API_BASE_URL}{path}", json=payload)
+        response.raise_for_status()
+        return response.json()
+
+
+@server.tool(name="tensorus_ingest_tensor")
+async def tensorus_ingest_tensor(
     dataset_name: str,
     tensor_shape: Sequence[int],
     tensor_dtype: str,
@@ -153,6 +211,30 @@ async def tensorus_create_dataset(dataset_name: str) -> TextContent:
 @server.tool(name="tensorus_get_tensor_details")
 async def tensorus_get_tensor_details(dataset_name: str, record_id: str) -> TextContent:
     result = await _get(f"/datasets/{dataset_name}/tensors/{record_id}")
+    return TextContent(type="text", text=json.dumps(result))
+
+
+@server.tool(name="tensorus_delete_dataset")
+async def tensorus_delete_dataset(dataset_name: str) -> TextContent:
+    result = await _delete(f"/datasets/{dataset_name}")
+    return TextContent(type="text", text=json.dumps(result))
+
+
+@server.tool(name="tensorus_delete_tensor")
+async def tensorus_delete_tensor(dataset_name: str, record_id: str) -> TextContent:
+    result = await _delete(f"/datasets/{dataset_name}/tensors/{record_id}")
+    return TextContent(type="text", text=json.dumps(result))
+
+
+@server.tool(name="tensorus_update_tensor_metadata")
+async def tensorus_update_tensor_metadata(
+    dataset_name: str, record_id: str, new_metadata: dict
+) -> TextContent:
+    payload = {"new_metadata": new_metadata}
+    result = await _put(
+        f"/datasets/{dataset_name}/tensors/{record_id}/metadata",
+        payload,
+    )
     return TextContent(type="text", text=json.dumps(result))
 
 

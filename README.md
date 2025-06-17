@@ -48,6 +48,11 @@ Here's an overview of the sample applications you can explore:
 *   **Description:** Demonstrates the Tensorus MCP server and client with a simple time series dataset. The demo inserts a synthetic sine wave using MCP calls and retrieves it back.
 *   **How to Run:** See ➡️ **[README_mcp_time_series_demo.md](README_mcp_time_series_demo.md)**
 
+### 4. MCP Endpoint Demo
+
+*   **Description:** A Streamlit UI that spawns the Tensorus MCP server on demand and demonstrates creating datasets, ingesting tensors and fetching records via its official endpoints.
+*   **How to Run:** See ➡️ **[README.md](MCP_endpoint_demo/README.md)**
+
 
 ---
 

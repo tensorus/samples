@@ -50,8 +50,11 @@ Here's an overview of the sample applications you can explore:
 
 ### 4. MCP Endpoint Demo
 
-*   **Description:** A Streamlit UI that lets you interact with the Tensorus MCP server through the `TensorusMCPClient`. It demonstrates creating datasets, ingesting tensors and fetching records using the official MCP endpoints.
-*   **How to Run:** See ➡️ **[README.md](MCP_endpoint_demo/README.md)**
+*   **Description:** A small Streamlit page that interacts with the official
+    Tensorus MCP server. It demonstrates basic dataset and tensor operations
+    using the `TensorusMCPClient`.
+*   **How to Run:** See ➡️ **[README_MCP_endpoint_demo.md](README_MCP_endpoint_demo.md)**
+
 
 
 ---

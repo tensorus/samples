@@ -44,7 +44,7 @@ export const demos = [
     thumbnailUrl: 'https://placehold.co/600x360/FF9500/FFFFFF/png?text=MCP+Demo',
     visualsPath: 'https://placehold.co/800x450/FF9500/FFFFFF/png?text=MCP+Endpoint+Detail',
     keyFeatures: [
-      'Shows how to run the Tensorus MCP server.',
+      'Shows how to run the Tensorus MCP server with SSE transport.',
       'Uses TensorusMCPClient to call dataset and tensor APIs.',
       'Displays raw JSON responses for educational purposes.'
     ],

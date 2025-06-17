@@ -12,15 +12,16 @@ This demo provides a minimal Streamlit application for exploring the Tensorus **
 
 ## Running the Demo
 
-1. **Start the MCP server** in a separate terminal. The server proxies requests to the public Tensorus API:
+1. **Start the MCP server** in a separate terminal using SSE transport. The server proxies requests to the public Tensorus API:
    ```bash
-   python -m tensorus.mcp_server
+   python -m tensorus.mcp_server --transport sse
    ```
 
 2. **Launch the Streamlit UI** for this demo:
    ```bash
    streamlit run MCP_endpoint_demo/app.py
    ```
+   Enter the server's base URL (e.g. `http://127.0.0.1:8000`) in the sidebar.
 
 The UI offers simple forms to call several MCP endpoints and shows the JSON responses returned by the server.
 

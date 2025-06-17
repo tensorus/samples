@@ -16,7 +16,11 @@ async def _call(method: str, *args: Any, **kwargs: Any) -> Any:
 
 
 def run(method: str, *args: Any, **kwargs: Any) -> Any:
-    return asyncio.run(_call(method, *args, **kwargs))
+    try:
+        return asyncio.run(_call(method, *args, **kwargs))
+    except Exception as exc:
+        st.error(f"{method} failed: {exc}")
+        return None
 
 
 st.title("Tensorus MCP Endpoint Demo")

@@ -24,7 +24,11 @@ st.write(
 # Utility to run async calls
 
 def run_async(coro):
-    return asyncio.run(coro)
+    try:
+        return asyncio.run(coro)
+    except Exception as exc:
+        st.error(str(exc))
+        return None
 
 def show_json(label, data):
     st.subheader(label)

@@ -24,10 +24,10 @@ pip install -r requirements.txt
 
 ## Running the Demo
 
-Simply launch the Streamlit app:
+Launch the Streamlit app (it automatically starts a local MCP server):
 
 ```bash
-streamlit run MCP_endpoint_demo/demo_site.py
+streamlit run MCP_endpoint_demo/app.py
 ```
 
 The page will display controls for the most common MCP endpoints. Each action

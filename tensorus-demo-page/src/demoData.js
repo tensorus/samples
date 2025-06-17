@@ -35,6 +35,23 @@ export const demos = [
     tags: ['NLP', 'Literature', 'Sentiment Analysis', 'Relationships'],
     localPort: 8501, // Default Streamlit port (Note: if running both simultaneously, one will take another port like 8502)
     streamlitCommand: 'streamlit run story_analyzer_demo.py'
+  },
+  {
+    id: 'mcp-endpoint-demo',
+    title: 'MCP Endpoint Demo',
+    shortDescription: 'Interactively call Tensorus MCP server endpoints.',
+    longDescription: 'A minimal Streamlit interface demonstrating the Tensorus Model Context Protocol. Users can create datasets, ingest tensors and inspect records via the MCP client.',
+    thumbnailUrl: 'https://placehold.co/600x360/FF9500/FFFFFF/png?text=MCP+Demo',
+    visualsPath: 'https://placehold.co/800x450/FF9500/FFFFFF/png?text=MCP+Endpoint+Detail',
+    keyFeatures: [
+      'Shows how to run the Tensorus MCP server.',
+      'Uses TensorusMCPClient to call dataset and tensor APIs.',
+      'Displays raw JSON responses for educational purposes.'
+    ],
+    readmeLink: 'https://github.com/GoogleCloudPlatform/tensorus/blob/main/MCP_endpoint_demo/README.md',
+    tags: ['MCP', 'API', 'Tensorus'],
+    localPort: 8501,
+    streamlitCommand: 'streamlit run MCP_endpoint_demo/app.py'
   }
   // Future demos will be added here
 ];
